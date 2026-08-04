@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CryptoLayer Web UI</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #141414;
+    --bg3: #1e1e1e;
+    --bg4: #2a2a2a;
+    --fg: #e4e6eb;
+    --fg2: #9aa0a8;
+    --fg3: #5c626b;
+    --accent: #4a9eff;
+    --accent2: #2d7dd2;
+    --success: #10b981;
+    --error: #ef4444;
+    --warning: #f59e0b;
+    --border: #2c2c2c;
+    --bubble-out: #397304;
+    --bubble-in: #244A79;
+    --scrollbar-track: #141414;
+    --scrollbar-thumb: #3a3a3a;
+    --scrollbar-thumb-hover: #4a4a4a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    font-size: 14px;
+  }
+  body { display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ---------- Кастомный scrollbar (везде) ---------- */
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
+  *::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+  *::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 6px;
+    border: 2px solid var(--scrollbar-track);
+  }
+  *::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
+  * { scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track); }
+
+  /* ---------- Header ---------- */
+  header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand img { width: 22px; height: 22px; display: block; }
+  .brand h1 { font-size: 16px; font-weight: 600; }
+.conn-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 6px;
+  background: var(--bg3);
+  color: var(--fg3);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+.conn-status.ok {
+  color: var(--success);
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+.conn-status.err {
+  color: var(--error);
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+.conn-status svg { width: 14px; height: 14px; }
+
+  /* ---------- Layout ---------- */
+  main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* ---------- Sidebar (скроллится) ---------- */
+  .sidebar {
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .sidebar-section { padding: 16px; border-bottom: 1px solid var(--border); }
+  .sidebar-section h2 {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--fg3); margin-bottom: 10px; font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sidebar-section h2 svg { width: 14px; height: 14px; opacity: 0.7; }
+
+  .form-row { margin-bottom: 10px; }
+  .form-row label { display: block; font-size: 12px; color: var(--fg2); margin-bottom: 4px; }
+  input[type="text"], input[type="password"], textarea, select {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--fg);
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+  }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+  textarea { resize: vertical; min-height: 50px; font-family: "SF Mono", Consolas, monospace; font-size: 11px; }
+
+  .btn {
+    background: var(--accent); color: white; border: none;
+    padding: 8px 14px; border-radius: 6px; cursor: pointer;
+    font-size: 13px; font-weight: 500; transition: background 0.15s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn svg { width: 14px; height: 14px; }
+  .btn:hover { background: var(--accent2); }
+  .btn:disabled { background: var(--bg4); color: var(--fg3); cursor: not-allowed; }
+  .btn.secondary { background: var(--bg4); }
+  .btn.secondary:hover { background: #383838; }
+  .btn.danger { background: var(--error); }
+  .btn.danger:hover { background: #dc2626; }
+  .btn.success { background: var(--success); }
+  .btn.success:hover { background: #059669; }
+  .btn-group { display: flex; gap: 8px; }
+
+  .status-line {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 10px; background: var(--bg3); border-radius: 6px;
+    margin-bottom: 6px; font-size: 12px;
+  }
+  .status-line.success { background: rgba(16,185,129,.12); color: var(--success); }
+  .status-line.error { background: rgba(239,68,68,.12); color: var(--error); }
+
+  .status-log { max-height: 260px; overflow-y: auto; background: var(--bg); border-radius: 6px; padding: 8px 12px; }
+  .status-item { font-size: 12px; padding: 4px 0; color: var(--fg2); border-bottom: 1px solid var(--bg3); }
+  .status-item:last-child { border-bottom: none; }
+  .status-item .stage { color: var(--accent); font-weight: 500; }
+  .status-item.success { color: var(--success); }
+  .status-item.error { color: var(--error); }
+
+  /* ---------- Chat ---------- */
+  .chat { display: flex; flex-direction: column; min-width: 0; background: var(--bg); }
+  .chat-header {
+    padding: 12px 20px; background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .chat-header .info { font-size: 13px; color: var(--fg2); display: flex; align-items: center; gap: 6px; }
+  .chat-header .info svg { width: 16px; height: 16px; opacity: 0.8; }
+  .chat-header .node-id { font-family: "SF Mono", Consolas, monospace; font-size: 11px; color: var(--fg3); }
+
+  .chat-messages {
+    flex: 1; overflow-y: auto; padding: 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .message {
+    max-width: 70%; padding: 10px 14px; border-radius: 14px;
+    word-wrap: break-word; line-height: 1.4; color: #fff;
+  }
+  .message.in {
+    background: var(--bubble-in);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+  }
+  .message.out {
+    background: var(--bubble-out);
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .message .meta { font-size: 10px; color: rgba(255,255,255,.65); margin-top: 4px; }
+  .message.out .meta { text-align: right; }
+
+  .chat-input {
+    padding: 14px 20px; background: var(--bg2);
+    border-top: 1px solid var(--border); display: flex; gap: 10px;
+  }
+  .chat-input input { flex: 1; }
+
+  /* ---------- Modal ---------- */
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,.75);
+    display: flex; align-items: center; justify-content: center; z-index: 100;
+  }
+  .modal {
+    background: var(--bg2); border-radius: 12px; padding: 24px;
+    min-width: 400px; max-width: 90vw; max-height: 90vh; overflow-y: auto;
+    border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,.6);
+  }
+  .modal h3 { margin-bottom: 12px; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+  .modal h3 svg { width: 18px; height: 18px; }
+  .modal p { color: var(--fg2); margin-bottom: 14px; line-height: 1.5; }
+  .modal .prompt {
+    background: var(--bg3); padding: 12px; border-radius: 6px;
+    font-family: "SF Mono", Consolas, monospace; font-size: 12px;
+    margin-bottom: 14px; word-break: break-all;
+  }
+  .modal input { margin-bottom: 14px; }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; bottom: 20px; right: 20px;
+    background: var(--bg2); border: 1px solid var(--border);
+    padding: 12px 16px; border-radius: 8px; z-index: 200;
+    box-shadow: 0 8px 24px rgba(0,0,0,.5);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .toast svg { width: 16px; height: 16px; }
+  .toast.error { border-color: var(--error); color: var(--error); }
+  .toast.success { border-color: var(--success); color: var(--success); }
+
+  /* ---------- Known nodes ---------- */
+  .known-nodes { max-height: 150px; overflow-y: auto; }
+  .known-node {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px; background: var(--bg3); border-radius: 6px; margin-bottom: 4px;
+    font-size: 12px; font-family: "SF Mono", Consolas, monospace;
+  }
+  .known-node button {
+    padding: 3px 8px; font-size: 11px; background: var(--error);
+    color: white; border: none; border-radius: 4px; cursor: pointer;
+    display: inline-flex; align-items: center;
+  }
+  .known-node button svg { width: 12px; height: 12px; }
+
+  .empty-state { text-align: center; color: var(--fg3); padding: 20px; font-size: 13px; }
+
+  .icon { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <img src="images/logo.svg" alt="logo" onerror="this.style.display='none'">
+    <h1>CryptoLayer Web UI</h1>
+  </div>
+  <div id="wsStatus" class="conn-status">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+    <span id="wsStatusText">Подключение к серверу...</span>
+  </div>
+</header>
+
+<main>
+  <aside class="sidebar">
+
+    <div class="sidebar-section">
+      <h2>
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        Инициализация
+      </h2>
+
+      <div class="form-row">
+        <label>Модуль транспорта</label>
+        <select id="moduleSelect"></select>
+      </div>
+
+      <div id="credsContainer"></div>
+
+      <div class="form-row" id="userIdRow" style="display:none;">
+        <label>ID собеседника в канале связи (user_id)</label>
+        <input type="text" id="companionUserId" placeholder="Например: 123456789">
+      </div>
+
+      <div class="form-row">
+        <label>Пароль</label>
+        <input type="password" id="password" value="123456">
+      </div>
+      <div class="form-row">
+        <label>Директория данных</label>
+        <input type="text" id="dataDir" value="./data/node_a">
+      </div>
+      <div class="form-row">
+        <label>WordCoder словарь (JSON, опционально)</label>
+        <textarea id="wordcoderDict" placeholder='{"00":"zero","01":"one",...}'></textarea>
+      </div>
+      <div class="btn-group">
+        <button class="btn" id="initBtn">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z"/></svg>
+          Init
+        </button>
+        <button class="btn danger" id="stopBtn">
+          <svg class="icon" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+          Stop
+        </button>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <h2>
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        Текущий статус
+      </h2>
+      <div id="currentStatus"><div class="empty-state">Не инициализировано</div></div>
+    </div>
+
+    <div class="sidebar-section">
+      <h2>
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.5"/><path d="M15 20c0-2 1.5-3.5 4-3.5"/></svg>
+        Известные узлы
+      </h2>
+      <div id="knownNodes" class="known-nodes"><div class="empty-state">Нет данных</div></div>
+      <button class="btn secondary" id="refreshNodesBtn" style="margin-top:8px;width:100%;">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+        Обновить
+      </button>
+    </div>
+
+    <div class="sidebar-section">
+      <h2>
+        <svg class="icon" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+        Журнал статусов
+      </h2>
+      <div id="statusLog" class="status-log"></div>
+    </div>
+
+  </aside>
+
+  <section class="chat">
+    <div class="chat-header">
+      <div>
+        <div class="info">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Чат
+        </div>
+        <div class="node-id" id="companionInfo">Собеседник не подключен</div>
+      </div>
+      <div id="cryptoBadge" class="status-line">not initialized</div>
+    </div>
+    <div id="messages" class="chat-messages">
+      <div class="empty-state">Сообщений пока нет</div>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="msgInput" placeholder="Введите сообщение..." disabled>
+      <button class="btn" id="sendBtn" disabled>
+        <svg class="icon" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        Отправить
+      </button>
+    </div>
+  </section>
+</main>
+
+<div id="modalContainer"></div>
+<div id="toastContainer"></div>
+
+<script>
+/* ---------- SVG-иконки (inline) ---------- */
+const ICONS = {
+  shield: '<svg class="icon" viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/></svg>',
+  doc: '<svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>',
+  check: '<svg class="icon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>',
+  x: '<svg class="icon" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+  info: '<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
+};
+
+class CryptoUI {
+  constructor() {
+    this.ws = null;
+    this.pendingRequests = new Map();
+    this.modules = [];
+    this.bindUI();
+    this.connectWS();
+    this.loadModules();
+  }
+
+  bindUI() {
+    document.getElementById('initBtn').onclick = () => this.initCrypto();
+    document.getElementById('stopBtn').onclick = () => this.stopCrypto();
+    document.getElementById('sendBtn').onclick = () => this.sendMessage();
+    document.getElementById('refreshNodesBtn').onclick = () => this.loadKnownNodes();
+    document.getElementById('msgInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') this.sendMessage();
+    });
+  }
+
+  async loadModules() {
+    try {
+      const r = await fetch('/api/modules');
+      const data = await r.json();
+      this.modules = data.items;
+
+      const sel = document.getElementById('moduleSelect');
+      sel.innerHTML = this.modules.map(m =>
+        `<option value="${m.unique_id}">${escapeHtml(m.name)} — ${escapeHtml(m.description)}</option>`
+      ).join('');
+      sel.onchange = () => this.renderModuleFields();
+      this.renderModuleFields();
+    } catch (e) {
+      this.showToast('Не удалось загрузить список модулей', 'error');
+    }
+  }
+
+  renderModuleFields() {
+    const sel = document.getElementById('moduleSelect');
+    const mod = this.modules.find(m => m.unique_id === sel.value);
+    const container = document.getElementById('credsContainer');
+    container.innerHTML = '';
+    if (!mod) return;
+
+    (mod.credentials || []).forEach((cred) => {
+      const entry = Object.entries(cred)[0];
+      if (!entry) return;
+      const [name, desc] = entry;
+      const row = document.createElement('div');
+      row.className = 'form-row';
+      row.innerHTML = `<label>${escapeHtml(name)} — ${escapeHtml(desc)}</label>`;
+      const input = document.createElement('input');
+      input.type = 'password';
+      input.dataset.cred = name;
+      input.placeholder = name;
+      row.appendChild(input);
+      container.appendChild(row);
+    });
+
+    document.getElementById('userIdRow').style.display = mod.is_http ? 'none' : 'block';
+  }
+
+  connectWS() {
+    const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    this.ws = new WebSocket(`${proto}//${location.host}/ws`);
+
+  this.ws.onopen = () => {
+    const el = document.getElementById('wsStatus');
+    el.className = 'conn-status ok';
+    document.getElementById('wsStatusText').textContent = 'Связь с сервером установлена';
+  };
+  this.ws.onclose = () => {
+    const el = document.getElementById('wsStatus');
+    el.className = 'conn-status err';
+    document.getElementById('wsStatusText').textContent = 'Нет связи с сервером — переподключение...';
+    setTimeout(() => this.connectWS(), 2000);
+  };
+    this.ws.onmessage = (ev) => {
+      try { this.handleMessage(JSON.parse(ev.data)); } catch (e) {}
+    };
+  }
+
+  handleMessage(msg) {
+    switch (msg.type) {
+      case 'bootstrap': this.handleBootstrap(msg); break;
+      case 'status': this.addStatus(msg); this.updateCurrentStatus(msg); break;
+      case 'message': this.addMessage(msg); break;
+      case 'check_signatures': this.showCheckSignaturesModal(msg); break;
+      case 'request_data': this.showRequestDataModal(msg); break;
+      case 'ready': this.setCryptoReady(true); break;
+      case 'disconnect':
+        this.setCryptoReady(false);
+        this.showToast('Собеседник отключился', 'error');
+        break;
+      case 'ping_timeout':
+        this.showToast('Ping timeout — собеседник не отвечает', 'error');
+        break;
+    }
+  }
+
+  handleBootstrap(data) {
+    if (data.init_state && data.init_state.status === 'ready') this.setCryptoReady(true);
+    (data.statuses || []).forEach(s => { this.addStatus(s, false); this.updateCurrentStatus(s); });
+    (data.history || []).forEach(m => this.addMessage(m, false));
+    (data.pending_requests || []).forEach(r => {
+      if (r.kind === 'check_signatures') this.showCheckSignaturesModal(r);
+      else if (r.kind === 'request_data') this.showRequestDataModal(r);
+    });
+    this.loadKnownNodes();
+    this.loadState();
+  }
+
+  async loadState() {
+    try {
+      const r = await fetch('/api/state');
+      const data = await r.json();
+      if (data.crypto && data.crypto.companion_node_id) {
+        document.getElementById('companionInfo').textContent = `Companion: ${data.crypto.companion_node_id}`;
+      }
+    } catch (e) {}
+  }
+
+  async loadKnownNodes() {
+    const container = document.getElementById('knownNodes');
+    try {
+      const r = await fetch('/api/keys/known-nodes');
+      const data = await r.json();
+      if (!data.items || data.items.length === 0) {
+        container.innerHTML = '<div class="empty-state">Нет известных узлов</div>';
+        return;
+      }
+      container.innerHTML = data.items.map(n => `
+        <div class="known-node">
+          <span title="${n.node_id}">${n.node_id.substring(0, 16)}...</span>
+          <button onclick="ui.deleteKnownNode('${n.node_id}')">${ICONS.x}</button>
+        </div>
+      `).join('');
+    } catch (e) {
+      container.innerHTML = '<div class="empty-state">Не загружено</div>';
+    }
+  }
+
+  async deleteKnownNode(nodeId) {
+    if (!confirm('Удалить узел?')) return;
+    try {
+      await fetch(`/api/keys/known-nodes/${encodeURIComponent(nodeId)}`, { method: 'DELETE' });
+      this.loadKnownNodes();
+      this.showToast('Узел удалён', 'success');
+    } catch (e) {
+      this.showToast('Ошибка удаления', 'error');
+    }
+  }
+
+  addStatus(s, scroll = true) {
+    const log = document.getElementById('statusLog');
+    const el = document.createElement('div');
+    el.className = 'status-item' + (s.status_type === 'success' ? ' success' : s.status_type === 'error' ? ' error' : '');
+    const t = new Date(s.ts * 1000).toLocaleTimeString();
+    el.innerHTML = `<span class="stage">[${escapeHtml(s.stage)}]</span> ${escapeHtml(s.message)} <small style="color:var(--fg3)">(${t})</small>`;
+    log.appendChild(el);
+    if (scroll) log.scrollTop = log.scrollHeight;
+  }
+
+  updateCurrentStatus(s) {
+    const c = document.getElementById('currentStatus');
+    c.innerHTML = `<div class="status-line ${s.status_type === 'success' ? 'success' : s.status_type === 'error' ? 'error' : ''}">${escapeHtml(s.stage)}: ${escapeHtml(s.message)}</div>`;
+  }
+
+  addMessage(m, scroll = true) {
+    const cont = document.getElementById('messages');
+    if (cont.querySelector('.empty-state')) cont.innerHTML = '';
+    const el = document.createElement('div');
+    el.className = 'message ' + (m.direction === 'out' ? 'out' : 'in');
+    const t = new Date((m.timestamp || m.ts) * 1000).toLocaleTimeString();
+    const who = m.direction === 'out' ? 'Вы' : 'Собеседник';
+    el.innerHTML = `${escapeHtml(m.text)}<div class="meta">${who} · ${t}</div>`;
+    cont.appendChild(el);
+    if (scroll) cont.scrollTop = cont.scrollHeight;
+  }
+
+  setCryptoReady(ready) {
+    const badge = document.getElementById('cryptoBadge');
+    const msgInput = document.getElementById('msgInput');
+    const sendBtn = document.getElementById('sendBtn');
+    if (ready) {
+      badge.className = 'status-line success';
+      badge.textContent = '● Ready';
+      msgInput.disabled = false;
+      sendBtn.disabled = false;
+    } else {
+      badge.className = 'status-line';
+      badge.textContent = '○ Not ready';
+      msgInput.disabled = true;
+      sendBtn.disabled = true;
+    }
+  }
+
+  async initCrypto() {
+    const password = document.getElementById('password').value;
+    const dataDir = document.getElementById('dataDir').value;
+    const moduleId = document.getElementById('moduleSelect').value;
+    const userId = document.getElementById('companionUserId').value.trim();
+
+    const credentials = [...document.querySelectorAll('#credsContainer input[data-cred]')]
+      .map(i => i.value);
+
+    let wordcoderDict = null;
+    const rawDict = document.getElementById('wordcoderDict').value.trim();
+    if (rawDict) {
+      try { wordcoderDict = JSON.parse(rawDict); }
+      catch (e) { this.showToast('Неверный JSON словаря', 'error'); return; }
+    }
+
+    try {
+      const r = await fetch('/api/init', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          password, data_dir: dataDir, wordcoder_dict: wordcoderDict,
+          module_id: moduleId, credentials, companion_user_id: userId || null,
+        })
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.detail || 'Init failed');
+      this.showToast('Инициализация запущена', 'success');
+    } catch (e) {
+      this.showToast('Ошибка: ' + e.message, 'error');
+    }
+  }
+
+  async stopCrypto() {
+    if (!confirm('Остановить CryptoLayer?')) return;
+    try {
+      await fetch('/api/stop', { method: 'POST' });
+      this.setCryptoReady(false);
+      this.showToast('Остановка...', 'success');
+    } catch (e) {
+      this.showToast('Ошибка', 'error');
+    }
+  }
+
+  async sendMessage() {
+    const input = document.getElementById('msgInput');
+    const text = input.value.trim();
+    if (!text) return;
+    try {
+      const r = await fetch('/api/messages/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+      if (!r.ok) {
+        const err = await r.json();
+        throw new Error(err.detail);
+      }
+      input.value = '';
+    } catch (e) {
+      this.showToast('Ошибка отправки: ' + e.message, 'error');
+    }
+  }
+
+  showCheckSignaturesModal(req) {
+    if (this.pendingRequests.has(req.request_id)) return;
+    this.pendingRequests.set(req.request_id, req);
+
+    const modal = document.createElement('div');
+    modal.className = 'modal-backdrop';
+    modal.innerHTML = `
+      <div class="modal">
+        <h3>${ICONS.shield} Проверка подписи собеседника</h3>
+        <p>Сравните подписи по другому каналу связи и подтвердите доверие:</p>
+        <div class="prompt">
+          <strong>Ваша подпись:</strong> ${escapeHtml(req.meta?.my_sign || '—')}<br>
+          <strong>Подпись собеседника:</strong> ${escapeHtml(req.meta?.companion_sign || '—')}
+        </div>
+        <div class="btn-group">
+          <button class="btn success" data-answer="true">${ICONS.check} Доверяю</button>
+          <button class="btn danger" data-answer="false">${ICONS.x} Не доверяю</button>
+        </div>
+      </div>
+    `;
+
+    modal.querySelectorAll('button[data-answer]').forEach(btn => {
+      btn.onclick = () => {
+        this.answerRequest(req.request_id, btn.dataset.answer === 'true');
+        modal.remove();
+        this.pendingRequests.delete(req.request_id);
+      };
+    });
+
+    document.getElementById('modalContainer').appendChild(modal);
+  }
+
+  showRequestDataModal(req) {
+    if (this.pendingRequests.has(req.request_id)) return;
+    this.pendingRequests.set(req.request_id, req);
+
+    const isBool = req.data_type === 'bool';
+    const modal = document.createElement('div');
+    modal.className = 'modal-backdrop';
+    modal.innerHTML = `
+      <div class="modal">
+        <h3>${ICONS.doc} Запрос данных</h3>
+        <div class="prompt">${escapeHtml(req.prompt)}</div>
+        <p><small>Тип: <code>${escapeHtml(req.data_type)}</code></small></p>
+        ${isBool ? `
+          <div class="btn-group">
+            <button class="btn success" data-answer="true">${ICONS.check} Да / True</button>
+            <button class="btn danger" data-answer="false">${ICONS.x} Нет / False</button>
+          </div>
+        ` : `
+          <input type="text" id="reqInput_${req.request_id}" placeholder="Значение">
+          <button class="btn" data-submit="1">Отправить</button>
+        `}
+      </div>
+    `;
+
+    if (isBool) {
+      modal.querySelectorAll('button[data-answer]').forEach(btn => {
+        btn.onclick = () => {
+          this.answerRequest(req.request_id, btn.dataset.answer === 'true');
+          modal.remove();
+          this.pendingRequests.delete(req.request_id);
+        };
+      });
+    } else {
+      const input = modal.querySelector('input');
+      const submit = modal.querySelector('button[data-submit]');
+      const doSubmit = () => {
+        let value = input.value;
+        if (req.data_type === 'int') value = parseInt(value, 10);
+        else if (req.data_type === 'float') value = parseFloat(value);
+        this.answerRequest(req.request_id, value);
+        modal.remove();
+        this.pendingRequests.delete(req.request_id);
+      };
+      submit.onclick = doSubmit;
+      input.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSubmit(); });
+      setTimeout(() => input.focus(), 100);
+    }
+
+    document.getElementById('modalContainer').appendChild(modal);
+  }
+
+  answerRequest(requestId, value) {
+    if (this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify({ type: 'answer', request_id: requestId, value }));
+    }
+  }
+
+  showToast(text, type = 'info') {
+    const c = document.getElementById('toastContainer');
+    const el = document.createElement('div');
+    el.className = 'toast ' + type;
+    const icon = type === 'error' ? ICONS.x : type === 'success' ? ICONS.check : ICONS.info;
+    el.innerHTML = icon + '<span>' + escapeHtml(text) + '</span>';
+    c.appendChild(el);
+    setTimeout(() => el.remove(), 4000);
+  }
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+window.ui = new CryptoUI();
+</script>
+
+</body>
+</html>
