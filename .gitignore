@@ -13,6 +13,13 @@ logs/
 # C extensions
 *.so
 
+base_module.py
+crypto_layer.py
+UIProvider.py
+wordcoder.py
+config.py
+levels/
+
 # Distribution / packaging
 .Python
 build/
