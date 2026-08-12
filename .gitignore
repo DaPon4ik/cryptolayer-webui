@@ -10,6 +10,7 @@ dist/
 build/
 CryptoLayerGUI.spec
 logs/
+modules/vk/
 # C extensions
 *.so
 
@@ -18,6 +19,7 @@ crypto_layer.py
 UIProvider.py
 wordcoder.py
 config.py
+run.py
 levels/
 
 # Distribution / packaging

@@ -10,13 +10,19 @@ def move(src, dst):
         r = requests.get(f"{src}/http-module/outbox", timeout=5)
         items = r.json().get("items", [])
         for item in items:
+            data = item["data"]
+
+            # Логирование передаваемого сообщения
+            print(f"{src} -> {dst}")
+            print(f"  пэйлод: {data}")
+
             requests.post(
                 f"{dst}/http-module/inbox",
-                json={"data": item["data"]},
+                json={"data": data},
                 timeout=5,
             )
     except Exception as e:
-        print("bridge error:", e)
+        print(f"о {src} -> {dst}: {e}")
 
 
 while True:

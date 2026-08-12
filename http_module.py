@@ -7,7 +7,7 @@ from base_module import BaseModule, Credential
 
 class HTTPModule(BaseModule):
     expected_credentials = [
-        Credential("Unused", "HTTP module does not require credentials")
+        Credential("n", "n")
     ]
     outbox_queue = queue.Queue()
     inbox_queue = queue.Queue()
@@ -19,11 +19,11 @@ class HTTPModule(BaseModule):
 
     @property
     def name(self):
-        return "HTTP"
+        return "*нейм*"
 
     @property
     def description(self):
-        return "HTTP transport via FastAPI REST endpoints"
+        return "тест по локалке"
 
     class Sender(BaseModule.Sender):
         def __init__(self, credentials, user_id):

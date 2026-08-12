@@ -202,7 +202,7 @@
     display: flex; align-items: center; justify-content: center; z-index: 100;
   }
   .modal {
-    background: var(--bg2); border-radius: 12px; padding: 24px;
+    background: var(--bg2); border-radius: 6px; padding: 24px;
     min-width: 400px; max-width: 90vw; max-height: 90vh; overflow-y: auto;
     border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,.6);
   }
@@ -245,13 +245,130 @@
   .empty-state { text-align: center; color: var(--fg3); padding: 20px; font-size: 13px; }
 
   .icon { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ========== Глазик пароля ========== */
+  .pass-wrap { position: relative; }
+  .pass-wrap input[type="password"],
+  .pass-wrap input[type="text"] { padding-right: 36px; }
+  .pass-eye {
+    position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; color: var(--fg3); cursor: pointer;
+    padding: 6px; border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    transition: color 0.15s;
+  }
+  .pass-eye:hover { color: var(--fg2); }
+  .pass-eye svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .pass-eye .eye-open { display: none; }
+  .pass-eye.revealed .eye-closed { display: none; }
+  .pass-eye.revealed .eye-open { display: block; }
+
+  /* ========== Кнопка настроек ========== */
+  .chat-header-right { display: flex; align-items: center; gap: 8px; }
+  .icon-btn {
+    background: var(--bg4); border: 1px solid var(--border); color: var(--fg2);
+    width: 32px; height: 32px; border-radius: 6px; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.15s; flex-shrink: 0;
+  }
+  .icon-btn:hover { color: var(--fg); border-color: var(--fg3); }
+  .icon-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ========== Модалка настроек ========== */
+  .settings-modal {
+    background: var(--bg2); border-radius: 6px;
+    width: 600px; height: 400px;
+    border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,.6);
+    display: flex; overflow: hidden;
+  }
+  .settings-sidebar {
+    width: 180px; background: var(--bg3); border-right: 1px solid var(--border);
+    padding: 20px 0; display: flex; flex-direction: column;
+  }
+  .settings-tab {
+    padding: 12px 20px; background: none; border: none; border-left: 3px solid transparent;
+    color: var(--fg2); cursor: pointer; font-size: 13px; font-weight: 500;
+    display: flex; align-items: center; gap: 8px; transition: all 0.15s;
+    font-family: inherit; text-align: left;
+  }
+  .settings-tab:hover { background: var(--bg4); color: var(--fg); }
+  .settings-tab.active { background: var(--bg2); color: var(--accent); border-left-color: var(--accent); }
+  .settings-tab svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .settings-content {
+    flex: 1; padding: 24px; display: flex; flex-direction: column;
+    overflow-y: auto;
+  }
+  .settings-content h3 {
+    margin-bottom: 20px; font-size: 16px; display: flex; align-items: center; gap: 8px;
+  }
+  .settings-pane { display: none; }
+  .settings-pane.active { display: block; }
+  .settings-group { margin-bottom: 20px; }
+  .settings-group label {
+    display: block; font-size: 12px; color: var(--fg2); margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;
+  }
+  .settings-group select {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--fg);
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    cursor: pointer;
+  }
+  .settings-group select:focus { border-color: var(--accent); }
+  .settings-close {
+    background: var(--bg4); border: none; color: var(--fg2); cursor: pointer;
+    padding: 8px; border-radius: 6px; margin-left: auto; display: flex;
+    transition: all 0.15s;
+  }
+  .settings-close:hover { color: var(--error); }
+  .settings-close svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ========== Эмодзи ========== */
+  .emoji-wrap { position: relative; display: flex; }
+  .emoji-pop {
+    position: absolute; bottom: calc(100% + 8px); right: 0;
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px; width: 260px; max-height: 180px; overflow-y: auto;
+    box-shadow: 0 8px 24px rgba(0,0,0,.5); z-index: 50;
+    display: none;
+  }
+  .emoji-wrap.open .emoji-pop { display: block; }
+  .emoji-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; }
+  .emoji-grid button {
+    background: none; border: none; font-size: 22px; padding: 8px;
+    cursor: pointer; border-radius: 6px; transition: background 0.1s;
+    line-height: 1;
+  }
+  .emoji-grid button:hover { background: var(--bg4); }
+
+  /* ========== Светлая тема ========== */
+  html[data-theme="light"] {
+    --bg: #f5f7fa;
+    --bg2: #ffffff;
+    --bg3: #f0f2f5;
+    --bg4: #e4e7eb;
+    --fg: #1a1d21;
+    --fg2: #5c626b;
+    --fg3: #8a9098;
+    --border: #d8dde3;
+    --bubble-out: #397304;
+    --bubble-in: #244A79;
+    --scrollbar-track: #f0f2f5;
+    --scrollbar-thumb: #c0c5cc;
+    --scrollbar-thumb-hover: #a8aeb5;
+  }
 </style>
 </head>
 <body>
 
 <header>
   <div class="brand">
-    <img src="images/logo.svg" alt="logo" onerror="this.style.display='none'">
+    <img src="images/logo.svg" alt="logo" id="logoImg">
     <h1>CryptoLayer Web UI</h1>
   </div>
   <div id="wsStatus" class="conn-status">
@@ -283,7 +400,21 @@
 
       <div class="form-row">
         <label>Пароль</label>
-        <input type="password" id="password" value="123456">
+        <div class="pass-wrap">
+          <input type="password" id="password" value="123456">
+          <button type="button" class="pass-eye" id="passEye" title="Показать/скрыть пароль">
+            <svg class="eye-closed" viewBox="0 0 24 24">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+              <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+            <svg class="eye-open" viewBox="0 0 24 24">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
       </div>
       <div class="form-row">
         <label>Директория данных</label>
@@ -344,13 +475,34 @@
         </div>
         <div class="node-id" id="companionInfo">Собеседник не подключен</div>
       </div>
-      <div id="cryptoBadge" class="status-line">not initialized</div>
+      <div class="chat-header-right">
+        <button type="button" class="icon-btn" id="settingsBtn" title="Настройки">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+        <div id="cryptoBadge" class="status-line" style="margin-bottom:0;">not initialized</div>
+      </div>
     </div>
     <div id="messages" class="chat-messages">
       <div class="empty-state">Сообщений пока нет</div>
     </div>
     <div class="chat-input">
       <input type="text" id="msgInput" placeholder="Введите сообщение..." disabled>
+      <div class="emoji-wrap" id="emojiWrap">
+        <button type="button" class="icon-btn" id="emojiBtn" title="Эмодзи">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+            <line x1="9" y1="9" x2="9.01" y2="9"/>
+            <line x1="15" y1="9" x2="15.01" y2="9"/>
+          </svg>
+        </button>
+        <div class="emoji-pop" id="emojiPop">
+          <div class="emoji-grid" id="emojiGrid"></div>
+        </div>
+      </div>
       <button class="btn" id="sendBtn" disabled>
         <svg class="icon" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
         Отправить
@@ -358,6 +510,45 @@
     </div>
   </section>
 </main>
+
+<!-- Модалка настроек -->
+<div class="modal-backdrop" id="settingsModal" style="display:none;">
+  <div class="settings-modal">
+    <div class="settings-sidebar">
+      <button class="settings-tab active" data-tab="appearance">
+        <svg viewBox="0 0 24 24">
+          <path d="M9.06 11.9l8.07-8.06a2.85 2.85 0 1 1 4.03 4.03l-8.06 8.08"/>
+          <path d="M7.07 14.94c-1.66 0-3 1.35-3 3.02 0 1.33-2.5 1.52-2 2.02 1.08 1.1 2.49 2.02 4 2.02 2.2 0 4-1.8 4-4.04a3.01 3.01 0 0 0-3-3.02z"/>
+        </svg>
+        Внешний вид
+      </button>
+    </div>
+    <div class="settings-content">
+      <div style="display:flex;align-items:center;">
+        <h3>
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          Настройки
+        </h3>
+        <button type="button" class="settings-close" id="closeSettings" title="Закрыть">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="settings-pane active" data-pane="appearance">
+        <div class="settings-group">
+          <label>Тема</label>
+          <select id="themeSelect">
+            <option value="system">Системная</option>
+            <option value="dark">Тёмная</option>
+            <option value="light">Светлая</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="modalContainer"></div>
 <div id="toastContainer"></div>
@@ -377,9 +568,13 @@ class CryptoUI {
     this.ws = null;
     this.pendingRequests = new Map();
     this.modules = [];
+    this.lastSentText = null;
+    this.lastSentTime = 0;
+    this.settings = { theme: 'system' };
     this.bindUI();
     this.connectWS();
     this.loadModules();
+    this.loadSettings();
   }
 
   bindUI() {
@@ -390,6 +585,95 @@ class CryptoUI {
     document.getElementById('msgInput').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') this.sendMessage();
     });
+
+    /* Глазик пароля */
+    document.getElementById('passEye').addEventListener('click', () => {
+      const input = document.getElementById('password');
+      const eye = document.getElementById('passEye');
+      const reveal = input.type === 'password';
+      input.type = reveal ? 'text' : 'password';
+      eye.classList.toggle('revealed', reveal);
+      eye.title = reveal ? 'Скрыть пароль' : 'Показать пароль';
+    });
+
+    /* Кнопка настроек */
+    document.getElementById('settingsBtn').addEventListener('click', () => {
+      document.getElementById('settingsModal').style.display = 'flex';
+    });
+    document.getElementById('closeSettings').addEventListener('click', () => {
+      document.getElementById('settingsModal').style.display = 'none';
+    });
+    document.getElementById('settingsModal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('settingsModal')) {
+        document.getElementById('settingsModal').style.display = 'none';
+      }
+    });
+    document.getElementById('themeSelect').addEventListener('change', (e) => {
+      this.settings.theme = e.target.value;
+      this.applySettings();
+      this.saveSettings();
+    });
+
+    /* Эмодзи */
+    const EMOJIS = ['🥸','😐','😑','😂','🤨','🤪','😭', '🤠', '🤫','🍩','🍪','💀'];
+    const grid = document.getElementById('emojiGrid');
+    EMOJIS.forEach(ch => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = ch;
+      b.addEventListener('click', () => {
+        const inp = document.getElementById('msgInput');
+        const start = inp.selectionStart ?? inp.value.length;
+        const end = inp.selectionEnd ?? start;
+        inp.value = inp.value.slice(0, start) + ch + inp.value.slice(end);
+        inp.focus();
+        inp.selectionStart = inp.selectionEnd = start + ch.length;
+      });
+      grid.appendChild(b);
+    });
+    document.getElementById('emojiBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('emojiWrap').classList.toggle('open');
+    });
+    document.getElementById('emojiPop').addEventListener('click', (e) => e.stopPropagation());
+    document.addEventListener('click', (e) => {
+      const wrap = document.getElementById('emojiWrap');
+      if (!wrap.contains(e.target)) wrap.classList.remove('open');
+    });
+  }
+
+  loadSettings() {
+    try {
+      const raw = localStorage.getItem('cl-settings');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.theme) this.settings.theme = parsed.theme;
+      }
+    } catch (_) {}
+    this.syncSettingsUI();
+    this.applySettings();
+  }
+  saveSettings() {
+    try { localStorage.setItem('cl-settings', JSON.stringify(this.settings)); } catch (_) {}
+  }
+  syncSettingsUI() {
+    document.getElementById('themeSelect').value = this.settings.theme;
+  }
+  applySettings() {
+    let theme = this.settings.theme;
+    if (theme === 'system') {
+      theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    document.documentElement.setAttribute('data-theme', theme === 'light' ? 'light' : 'dark');
+
+    /* Смена логотипа с правильной обработкой ошибок */
+    const logoImg = document.getElementById('logoImg');
+    if (logoImg) {
+      logoImg.onload = function() { this.style.display = 'block'; };
+      logoImg.onerror = function() { this.style.display = 'none'; };
+      const newSrc = theme === 'light' ? 'images/logo_alt.svg' : 'images/logo.svg';
+      logoImg.src = newSrc;
+    }
   }
 
   async loadModules() {
@@ -541,12 +825,17 @@ class CryptoUI {
   }
 
   addMessage(m, scroll = true) {
+    if (m.direction !== 'out' && m.text && m.text === this.lastSentText && (Date.now() - this.lastSentTime) < 3000) {
+      this.lastSentText = null;
+      return;
+    }
     const cont = document.getElementById('messages');
     if (cont.querySelector('.empty-state')) cont.innerHTML = '';
     const el = document.createElement('div');
-    el.className = 'message ' + (m.direction === 'out' ? 'out' : 'in');
-    const t = new Date((m.timestamp || m.ts) * 1000).toLocaleTimeString();
-    const who = m.direction === 'out' ? 'Вы' : 'Собеседник';
+    const isOut = m.direction === 'out';
+    el.className = 'message ' + (isOut ? 'out' : 'in');
+    const t = new Date((m.timestamp || m.ts || Date.now() / 1000) * 1000).toLocaleTimeString();
+    const who = isOut ? 'Вы' : 'Собеседник';
     el.innerHTML = `${escapeHtml(m.text)}<div class="meta">${who} · ${t}</div>`;
     cont.appendChild(el);
     if (scroll) cont.scrollTop = cont.scrollHeight;
@@ -617,6 +906,12 @@ class CryptoUI {
     const input = document.getElementById('msgInput');
     const text = input.value.trim();
     if (!text) return;
+
+    this.addMessage({ text, direction: 'out', ts: Date.now() / 1000 });
+    this.lastSentText = text;
+    this.lastSentTime = Date.now();
+    input.value = '';
+
     try {
       const r = await fetch('/api/messages/send', {
         method: 'POST',
@@ -627,7 +922,6 @@ class CryptoUI {
         const err = await r.json();
         throw new Error(err.detail);
       }
-      input.value = '';
     } catch (e) {
       this.showToast('Ошибка отправки: ' + e.message, 'error');
     }
