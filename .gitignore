@@ -10,7 +10,7 @@ dist/
 build/
 CryptoLayerGUI.spec
 logs/
-modules/vk/
+modules/
 # C extensions
 *.so
 
