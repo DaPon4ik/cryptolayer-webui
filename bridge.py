@@ -11,8 +11,6 @@ def move(src, dst):
         items = r.json().get("items", [])
         for item in items:
             data = item["data"]
-
-            # Логирование передаваемого сообщения
             print(f"{src} -> {dst}")
             print(f"  пэйлод: {data}")
 
