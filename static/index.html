@@ -196,7 +196,39 @@
     align-self: flex-end;
     border-bottom-right-radius: 4px;
   }
+  .message code {
+    background: rgba(0,0,0,0.25);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 12px;
+  }
+  .message pre {
+    background: rgba(0,0,0,0.25);
+    padding: 8px 10px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 4px 0;
+    font-size: 12px;
+  }
+  .message pre code {
+    background: none;
+    padding: 0;
+    font-size: 12px;
+  }
+  .message a {
+    color: #a8d4ff;
+    text-decoration: underline;
+    word-break: break-all;
+  }
+  .message a:hover { color: #c8e4ff; }
+  .message strong { font-weight: 700; }
+  .message em { font-style: italic; }
+  .message del { opacity: 0.7; }
   .message .meta { font-size: 10px; color: rgba(255,255,255,.65); margin-top: 4px; }
+  .message .meta code,
+  .message .meta pre,
+  .message .meta a { font-size: 10px; }
   .message.out .meta { text-align: right; }
 
   .chat-input {
@@ -575,6 +607,33 @@ const ICONS = {
   info: '<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
 };
 
+function renderMarkdown(text) {
+  let html = escapeHtml(text);
+  const codeBlocks = [];
+  const inlineCodes = [];
+  html = html.replace(/```([\s\S]*?)```/g, (m, code) => {
+    codeBlocks.push('<pre><code>' + code + '</code></pre>');
+    return '\x00CB' + (codeBlocks.length - 1) + '\x00';
+  });
+  html = html.replace(/`([^`\n]+)`/g, (m, code) => {
+    inlineCodes.push('<code>' + code + '</code>');
+    return '\x00IC' + (inlineCodes.length - 1) + '\x00';
+  });
+  html = html.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/__([^_\n]+)__/g, '<strong>$1</strong>');
+  html = html.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '<em>$1</em>');
+  html = html.replace(/(?<!\w)_([^_\n]+)_(?!\w)/g, '<em>$1</em>');
+  html = html.replace(/~~([^~\n]+)~~/g, '<del>$1</del>');
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (m, txt, url) => {
+    if (/^javascript:/i.test(url.trim())) return m;
+    return '<a href="' + url + '" target="_blank" rel="noopener">' + txt + '</a>';
+  });
+  html = html.replace(/\n/g, '<br>');
+  html = html.replace(/\x00IC(\d+)\x00/g, (m, i) => inlineCodes[parseInt(i)]);
+  html = html.replace(/\x00CB(\d+)\x00/g, (m, i) => codeBlocks[parseInt(i)]);
+  return html;
+}
+
 class CryptoUI {
   constructor() {
     this.ws = null;
@@ -854,7 +913,7 @@ class CryptoUI {
     el.className = 'message ' + (isOut ? 'out' : 'in');
     const t = new Date((m.timestamp || m.ts || Date.now() / 1000) * 1000).toLocaleTimeString();
     const who = isOut ? 'Вы' : 'Собеседник';
-    el.innerHTML = `${escapeHtml(m.text).replace(/\n/g, '<br>')}<div class="meta">${who} · ${t}</div>`;
+    el.innerHTML = renderMarkdown(m.text) + '<div class="meta">' + escapeHtml(who) + ' · ' + escapeHtml(t) + '</div>';
     cont.appendChild(el);
     if (scroll) cont.scrollTop = cont.scrollHeight;
   }
