@@ -37,7 +37,6 @@
   }
   body { display: flex; flex-direction: column; overflow: hidden; }
 
-  /* ---------- Кастомный scrollbar (везде) ---------- */
   *::-webkit-scrollbar { width: 10px; height: 10px; }
   *::-webkit-scrollbar-track { background: var(--scrollbar-track); }
   *::-webkit-scrollbar-thumb {
@@ -48,7 +47,6 @@
   *::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
   * { scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track); }
 
-  /* ---------- Header ---------- */
   header {
     background: var(--bg2);
     border-bottom: 1px solid var(--border);
@@ -61,32 +59,31 @@
   .brand { display: flex; align-items: center; gap: 10px; }
   .brand img { width: 22px; height: 22px; display: block; }
   .brand h1 { font-size: 16px; font-weight: 600; }
-.conn-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 5px 12px;
-  border-radius: 6px;
-  background: var(--bg3);
-  color: var(--fg3);
-  border: 1px solid var(--border);
-  transition: all 0.2s;
-}
-.conn-status.ok {
-  color: var(--success);
-  background: rgba(16, 185, 129, 0.1);
-  border-color: rgba(16, 185, 129, 0.3);
-}
-.conn-status.err {
-  color: var(--error);
-  background: rgba(239, 68, 68, 0.1);
-  border-color: rgba(239, 68, 68, 0.3);
-}
-.conn-status svg { width: 14px; height: 14px; }
+  .conn-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 6px;
+    background: var(--bg3);
+    color: var(--fg3);
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  .conn-status.ok {
+    color: var(--success);
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+  .conn-status.err {
+    color: var(--error);
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+  .conn-status svg { width: 14px; height: 14px; }
 
-  /* ---------- Layout ---------- */
   main {
     flex: 1;
     display: grid;
@@ -96,7 +93,6 @@
     overflow: hidden;
   }
 
-  /* ---------- Sidebar (скроллится) ---------- */
   .sidebar {
     background: var(--bg2);
     border-right: 1px solid var(--border);
@@ -159,7 +155,6 @@
   .status-item.success { color: var(--success); }
   .status-item.error { color: var(--error); }
 
-  /* ---------- Chat ---------- */
   .chat {
     display: flex;
     flex-direction: column;
@@ -208,10 +203,21 @@
     padding: 14px 20px; background: var(--bg2);
     border-top: 1px solid var(--border); display: flex; gap: 10px;
     flex-shrink: 0;
+    align-items: flex-end;
   }
-  .chat-input input { flex: 1; }
+  .chat-input textarea {
+    flex: 1;
+    resize: none;
+    min-height: 34px;
+    max-height: 140px;
+    height: 34px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-y: auto;
+    padding: 5px 12px;
+  }
 
-  /* ---------- Modal ---------- */
   .modal-backdrop {
     position: fixed; inset: 0; background: rgba(0,0,0,.75);
     display: flex; align-items: center; justify-content: center; z-index: 100;
@@ -231,7 +237,6 @@
   }
   .modal input { margin-bottom: 14px; }
 
-  /* ---------- Toast ---------- */
   .toast {
     position: fixed; bottom: 20px; right: 20px;
     background: var(--bg2); border: 1px solid var(--border);
@@ -243,7 +248,6 @@
   .toast.error { border-color: var(--error); color: var(--error); }
   .toast.success { border-color: var(--success); color: var(--success); }
 
-  /* ---------- Known nodes ---------- */
   .known-nodes { max-height: 150px; overflow-y: auto; }
   .known-node {
     display: flex; justify-content: space-between; align-items: center;
@@ -261,7 +265,6 @@
 
   .icon { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-  /* ========== Глазик пароля ========== */
   .pass-wrap { position: relative; }
   .pass-wrap input[type="password"],
   .pass-wrap input[type="text"] { padding-right: 36px; }
@@ -277,7 +280,6 @@
   .pass-eye.revealed .eye-closed { display: none; }
   .pass-eye.revealed .eye-open { display: block; }
 
-  /* ========== Кнопка настроек ========== */
   .chat-header-right { display: flex; align-items: center; gap: 8px; }
   .icon-btn {
     background: var(--bg4); border: 1px solid var(--border); color: var(--fg2);
@@ -288,7 +290,6 @@
   .icon-btn:hover { color: var(--fg); border-color: var(--fg3); }
   .icon-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-  /* ========== Модалка настроек ========== */
   .settings-modal {
     background: var(--bg2); border-radius: 6px;
     width: 600px; height: 400px;
@@ -343,8 +344,7 @@
   .settings-close:hover { color: var(--error); }
   .settings-close svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-  /* ========== Эмодзи ========== */
-  .emoji-wrap { position: relative; display: flex; }
+  .emoji-wrap { position: relative; display: flex; flex-shrink: 0; }
   .emoji-pop {
     position: absolute; bottom: calc(100% + 8px); right: 0;
     background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
@@ -361,7 +361,6 @@
   }
   .emoji-grid button:hover { background: var(--bg4); }
 
-  /* ========== Светлая тема ========== */
   html[data-theme="light"] {
     --bg: #f5f7fa;
     --bg2: #ffffff;
@@ -504,7 +503,7 @@
       <div class="empty-state">Сообщений пока нет</div>
     </div>
     <div class="chat-input">
-      <input type="text" id="msgInput" placeholder="Введите сообщение..." disabled>
+      <textarea id="msgInput" placeholder="Введите сообщение..." disabled rows="1"></textarea>
       <div class="emoji-wrap" id="emojiWrap">
         <button type="button" class="icon-btn" id="emojiBtn" title="Эмодзи">
           <svg viewBox="0 0 24 24">
@@ -526,7 +525,6 @@
   </section>
 </main>
 
-<!-- Модалка настроек -->
 <div class="modal-backdrop" id="settingsModal" style="display:none;">
   <div class="settings-modal">
     <div class="settings-sidebar">
@@ -569,7 +567,6 @@
 <div id="toastContainer"></div>
 
 <script>
-/* ---------- SVG-иконки (inline) ---------- */
 const ICONS = {
   shield: '<svg class="icon" viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/></svg>',
   doc: '<svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>',
@@ -597,11 +594,19 @@ class CryptoUI {
     document.getElementById('stopBtn').onclick = () => this.stopCrypto();
     document.getElementById('sendBtn').onclick = () => this.sendMessage();
     document.getElementById('refreshNodesBtn').onclick = () => this.loadKnownNodes();
-    document.getElementById('msgInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') this.sendMessage();
+
+    const msgInput = document.getElementById('msgInput');
+    msgInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        this.sendMessage();
+      }
+    });
+    msgInput.addEventListener('input', () => {
+      msgInput.style.height = 'auto';
+      msgInput.style.height = Math.min(msgInput.scrollHeight, 140) + 'px';
     });
 
-    /* Глазик пароля */
     document.getElementById('passEye').addEventListener('click', () => {
       const input = document.getElementById('password');
       const eye = document.getElementById('passEye');
@@ -611,7 +616,6 @@ class CryptoUI {
       eye.title = reveal ? 'Скрыть пароль' : 'Показать пароль';
     });
 
-    /* Кнопка настроек */
     document.getElementById('settingsBtn').addEventListener('click', () => {
       document.getElementById('settingsModal').style.display = 'flex';
     });
@@ -629,7 +633,6 @@ class CryptoUI {
       this.saveSettings();
     });
 
-    /* Эмодзи */
     const EMOJIS = ['🥸','😐','😑','😂','🤨','🤪','😭', '🤠', '🤫','🍩','🍪','💀'];
     const grid = document.getElementById('emojiGrid');
     EMOJIS.forEach(ch => {
@@ -643,6 +646,7 @@ class CryptoUI {
         inp.value = inp.value.slice(0, start) + ch + inp.value.slice(end);
         inp.focus();
         inp.selectionStart = inp.selectionEnd = start + ch.length;
+        inp.dispatchEvent(new Event('input'));
       });
       grid.appendChild(b);
     });
@@ -681,7 +685,6 @@ class CryptoUI {
     }
     document.documentElement.setAttribute('data-theme', theme === 'light' ? 'light' : 'dark');
 
-    /* Смена логотипа с правильной обработкой ошибок */
     const logoImg = document.getElementById('logoImg');
     if (logoImg) {
       logoImg.onload = function() { this.style.display = 'block'; };
@@ -737,17 +740,17 @@ class CryptoUI {
     const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
     this.ws = new WebSocket(`${proto}//${location.host}/ws`);
 
-  this.ws.onopen = () => {
-    const el = document.getElementById('wsStatus');
-    el.className = 'conn-status ok';
-    document.getElementById('wsStatusText').textContent = 'Связь с сервером установлена';
-  };
-  this.ws.onclose = () => {
-    const el = document.getElementById('wsStatus');
-    el.className = 'conn-status err';
-    document.getElementById('wsStatusText').textContent = 'Нет связи с сервером — переподключение...';
-    setTimeout(() => this.connectWS(), 2000);
-  };
+    this.ws.onopen = () => {
+      const el = document.getElementById('wsStatus');
+      el.className = 'conn-status ok';
+      document.getElementById('wsStatusText').textContent = 'Связь с сервером установлена';
+    };
+    this.ws.onclose = () => {
+      const el = document.getElementById('wsStatus');
+      el.className = 'conn-status err';
+      document.getElementById('wsStatusText').textContent = 'Нет связи с сервером — переподключение...';
+      setTimeout(() => this.connectWS(), 2000);
+    };
     this.ws.onmessage = (ev) => {
       try { this.handleMessage(JSON.parse(ev.data)); } catch (e) {}
     };
@@ -851,7 +854,7 @@ class CryptoUI {
     el.className = 'message ' + (isOut ? 'out' : 'in');
     const t = new Date((m.timestamp || m.ts || Date.now() / 1000) * 1000).toLocaleTimeString();
     const who = isOut ? 'Вы' : 'Собеседник';
-    el.innerHTML = `${escapeHtml(m.text)}<div class="meta">${who} · ${t}</div>`;
+    el.innerHTML = `${escapeHtml(m.text).replace(/\n/g, '<br>')}<div class="meta">${who} · ${t}</div>`;
     cont.appendChild(el);
     if (scroll) cont.scrollTop = cont.scrollHeight;
   }
@@ -926,6 +929,7 @@ class CryptoUI {
     this.lastSentText = text;
     this.lastSentTime = Date.now();
     input.value = '';
+    input.style.height = '34px';
 
     try {
       const r = await fetch('/api/messages/send', {
