@@ -19,7 +19,7 @@ class HTTPModule(BaseModule):
 
     @property
     def name(self):
-        return "*нейм*"
+        return "тест"
 
     @property
     def description(self):

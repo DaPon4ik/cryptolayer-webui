@@ -10,9 +10,13 @@ Web-интерфейс для защищенного обмена сообщен
 [![License](https://img.shields.io/badge/License-MIT-brightgreen?color=blue&style=flat)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54&style=flat-square)](https://www.python.org/)
 
-</div>
+
 
 ---
+
+<img src="stuff/screenshot1.png" width="500"> <img src="stuff/screenshot2.png" width="500">
+
+</div>
 
 ## Запуск:
 ```shell
