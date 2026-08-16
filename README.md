@@ -19,12 +19,32 @@ Web-интерфейс для защищенного обмена сообщен
 </div>
 
 ## Запуск:
+
 ```shell
-uvicorn main:app --host 127.0.0.1 --port 8000
+git submodule update --init --recursive
+
+python3 -m venv venv
+
+source venv/bin/activate
+
+python3 src/modules/generate_reqs.py
+
+pip install -r src/modules/common_requirements.txt
+
+pip install -r requirements.txt
+
+python3 src/modules/generate_hidden_imports.py
+
+cd src
+
+uvicorn main:app --host 0.0.0.0 --port 8000
 ```
+
+###### (Или запустить run.sh)
+
 - открыть в браузере http://127.0.0.1:8000/
 
-**Важно:** *перед этим нужно закинуть в папку с этим web ui файлы cryptolayer<sup>[1](#crypto-ref)</sup> и папку с модулем<sup>[2](#modules-ref)</sup> в папку modules*
+
 
 
 ## Ссылки
