@@ -156,6 +156,7 @@
   .status-item.error { color: var(--error); }
 
   .chat {
+    position: relative;
     display: flex;
     flex-direction: column;
     min-width: 0;
@@ -224,7 +225,41 @@
   .message a:hover { color: #c8e4ff; }
   .message strong { font-weight: 700; }
   .message em { font-style: italic; }
+  .message u { text-decoration: underline; }
   .message del { opacity: 0.7; }
+  .message h1, .message h2, .message h3 {
+    font-weight: 700;
+    margin: 0.3em 0 0.15em 0;
+    line-height: 1.25;
+  }
+  .message h1 { font-size: 1.4em; border-bottom: 1px solid rgba(255,255,255,.25); padding-bottom: 0.1em; }
+  .message h2 { font-size: 1.2em; border-bottom: 1px solid rgba(255,255,255,.2); padding-bottom: 0.1em; }
+  .message h3 { font-size: 1.05em; }
+  .message blockquote {
+    border-left: 3px solid rgba(255,255,255,.5);
+    padding: 2px 10px;
+    margin: 4px 0;
+    opacity: 0.9;
+  }
+  .message ul, .message ol { margin: 4px 0 4px 1.4em; }
+  .message li { margin: 1px 0; }
+  .message hr {
+    border: none;
+    height: 1px;
+    background: rgba(255,255,255,.3);
+    margin: 6px 0;
+  }
+  .message table {
+    border-collapse: collapse;
+    margin: 4px 0;
+    font-size: 12px;
+  }
+  .message th, .message td {
+    border: 1px solid rgba(255,255,255,.3);
+    padding: 3px 8px;
+    text-align: left;
+  }
+  .message th { background: rgba(0,0,0,0.2); font-weight: 700; }
   .message .meta { font-size: 10px; color: rgba(255,255,255,.65); margin-top: 4px; }
   .message .meta code,
   .message .meta pre,
@@ -393,6 +428,245 @@
   }
   .emoji-grid button:hover { background: var(--bg4); }
 
+  .format-pop {
+    position: absolute;
+    z-index: 60;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.5);
+  }
+  .format-pop.open { display: flex; }
+
+  .fmt-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: background 0.15s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 28px;
+    height: 28px;
+  }
+  .fmt-btn:hover { background: var(--accent2); }
+  .fmt-btn.secondary { background: var(--bg4); color: var(--fg); }
+  .fmt-btn.secondary:hover { background: #383838; }
+  .fmt-btn.secondary.on {
+    background: var(--accent2);
+    color: #fff;
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  .fmt-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .fmt-btn .h-num {
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .fmt-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    padding: 4px 6px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  .fmt-editor-wrap {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  #fmtEditor {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 8px 12px 26px 12px;
+    outline: none;
+    line-height: 1.6;
+    color: var(--fg);
+    caret-color: var(--accent);
+  }
+  #fmtEditor:empty::before {
+    content: attr(data-placeholder);
+    color: var(--fg3);
+    pointer-events: none;
+  }
+  #fmtEditor ::selection { background: rgba(74,158,255,0.35); }
+  #fmtEditor h1, #fmtEditor h2, #fmtEditor h3, #fmtEditor h4, #fmtEditor h5, #fmtEditor h6 {
+    margin: 0.5em 0 0.2em 0;
+    font-weight: 600;
+    color: var(--fg);
+  }
+  #fmtEditor h1 { font-size: 1.8em; border-bottom: 1px solid var(--border); padding-bottom: 0.1em; }
+  #fmtEditor h2 { font-size: 1.5em; border-bottom: 1px solid var(--border); padding-bottom: 0.1em; }
+  #fmtEditor h3 { font-size: 1.2em; }
+  #fmtEditor p { margin: 0 0 0.4em 0; }
+  #fmtEditor b, #fmtEditor strong { font-weight: 700; }
+  #fmtEditor i, #fmtEditor em { font-style: italic; }
+  #fmtEditor u { text-decoration: underline; }
+  #fmtEditor s, #fmtEditor strike, #fmtEditor del { opacity: 0.7; text-decoration: line-through; }
+  #fmtEditor code {
+    background: rgba(0,0,0,0.3);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 0.9em;
+    color: #f0b0b0;
+  }
+  #fmtEditor pre {
+    background: rgba(0,0,0,0.35);
+    padding: 8px 10px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 0.4em 0;
+    border: 1px solid var(--border);
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 0.9em;
+    color: #c0d0e0;
+    white-space: pre-wrap;
+  }
+  #fmtEditor a { color: #a8d4ff; text-decoration: underline; word-break: break-all; }
+  #fmtEditor a:hover { color: #c8e4ff; }
+  #fmtEditor table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0.4em 0;
+    font-size: 0.95em;
+    table-layout: fixed;
+  }
+  #fmtEditor th, #fmtEditor td {
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+    text-align: left;
+    min-width: 24px;
+    overflow-wrap: break-word;
+  }
+  #fmtEditor th { background: var(--bg3); font-weight: 600; }
+  #fmtEditor tr:nth-child(even) { background: var(--bg2); }
+  #fmtEditor ul, #fmtEditor ol { margin: 0.3em 0 0.4em 1.6em; }
+  #fmtEditor li { margin-bottom: 0.1em; }
+  #fmtEditor hr {
+    border: none;
+    height: 1px;
+    background: var(--border);
+    margin: 0.6em 0;
+  }
+  #fmtEditor blockquote {
+    border-left: 4px solid var(--accent);
+    background: var(--bg3);
+    padding: 4px 12px;
+    margin: 0.4em 0;
+    border-radius: 0 6px 6px 0;
+    color: var(--fg2);
+  }
+
+  .fmt-tbl-tool {
+    position: fixed;
+    z-index: 130;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg4);
+    color: var(--fg2);
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+  .fmt-tbl-tool.show { display: flex; }
+  .fmt-tbl-tool:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .fmt-tbl-tool.minus:hover { background: var(--error); border-color: var(--error); }
+
+  .fmt-tbl-picker {
+    position: fixed;
+    z-index: 120;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px;
+    display: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,.5);
+  }
+  .fmt-tbl-picker.show { display: block; }
+  .fmt-tbl-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 18px);
+    gap: 3px;
+  }
+  .fmt-tbl-cell {
+    width: 18px;
+    height: 18px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    background: var(--bg3);
+    cursor: pointer;
+  }
+  .fmt-tbl-cell.hl {
+    background: rgba(74,158,255,0.25);
+    border-color: var(--accent);
+  }
+  .fmt-tbl-label {
+    text-align: center;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--fg2);
+  }
+
+  .fmt-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 140;
+  }
+  .fmt-modal-backdrop.show { display: flex; }
+  .fmt-modal {
+    width: 320px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    box-shadow: 0 12px 32px rgba(0,0,0,.6);
+  }
+  .fmt-modal-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+  .fmt-modal input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 8px;
+    color: var(--fg);
+    font-size: 13px;
+    outline: none;
+    font-family: "SF Mono", Consolas, monospace;
+  }
+  .fmt-modal input:focus { border-color: var(--accent); }
+  .fmt-modal-actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 12px; }
+
   html[data-theme="light"] {
     --bg: #f5f7fa;
     --bg2: #ffffff;
@@ -536,6 +810,14 @@
     </div>
     <div class="chat-input">
       <textarea id="msgInput" placeholder="Введите сообщение..." disabled rows="1"></textarea>
+      <button type="button" class="icon-btn" id="formatBtn" title="Форматирование">
+        <svg viewBox="0 0 24 24">
+          <path d="M3.5 15.5 7 5.5h.5l3.5 10"/>
+          <path d="M5.2 11.5h4.6"/>
+          <path d="M3 19h9"/>
+          <path d="M14.5 18.5l.9-3.1 4.6-4.6 2.2 2.2-4.6 4.6-3.1.9z"/>
+        </svg>
+      </button>
       <div class="emoji-wrap" id="emojiWrap">
         <button type="button" class="icon-btn" id="emojiBtn" title="Эмодзи">
           <svg viewBox="0 0 24 24">
@@ -553,6 +835,59 @@
         <svg class="icon" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
         Отправить
       </button>
+    </div>
+
+    <div class="format-pop" id="formatPop">
+      <div class="fmt-toolbar">
+        <button class="fmt-btn secondary" data-cmd="bold" title="Полужирный (Ctrl+B)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 12a4 4 0 0 0 0-8H6v8"/><path d="M15 20a4 4 0 0 0 0-8H6v8Z"/></svg>
+        </button>
+        <button class="fmt-btn secondary" data-cmd="italic" title="Курсив (Ctrl+I)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>
+        </button>
+        <button class="fmt-btn secondary" data-cmd="underline" title="Подчёркнутый (Ctrl+U)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 4v6a6 6 0 0 0 12 0V4"/><line x1="4" y1="20" x2="20" y2="20"/></svg>
+        </button>
+        <button class="fmt-btn secondary" data-cmd="strike" title="Зачёркнутый">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4H9a3 3 0 0 0-2.83 4"/><path d="M14 12a4 4 0 0 1 0 8H6"/><line x1="4" y1="12" x2="20" y2="12"/></svg>
+        </button>
+        <button class="fmt-btn secondary" data-cmd="code" title="Инлайн-код">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </button>
+        <button class="fmt-btn secondary" data-cmd="link" title="Ссылка (Ctrl+K)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 0 1 0 10h-2"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        </button>
+        <button class="fmt-btn secondary" data-cmd="codeblock" title="Блок кода">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><path d="m10 10-2.5 2.5L10 15"/><path d="m14 10 2.5 2.5L14 15"/></svg>
+        </button>
+        <button class="fmt-btn secondary" data-cmd="ul" title="Маркированный список">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4.5" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="4.5" cy="18" r="1.3" fill="currentColor" stroke="none"/></svg>
+        </button>
+        <button class="fmt-btn secondary" data-cmd="ol" title="Нумерованный список">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+        </button>
+        <button class="fmt-btn secondary" data-cmd="table" title="Таблица">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><path d="M3 9.5h18M9.5 9.5v10M15.5 9.5v10"/></svg>
+        </button>
+        <button class="fmt-btn secondary" data-cmd="hr" title="Разделитель">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="4" y1="12" x2="20" y2="12"/></svg>
+        </button>
+        <button class="fmt-btn secondary" data-cmd="quote" title="Цитата">
+          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>
+        </button>
+        <button class="fmt-btn secondary" data-cmd="h1" title="Заголовок 1">
+          <svg viewBox="0 0 24 24"><path d="M4 5.5v13M11.5 5.5v13M4 12h7.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><text x="18" y="18" class="h-num" fill="currentColor" stroke="none">1</text></svg>
+        </button>
+        <button class="fmt-btn secondary" data-cmd="h2" title="Заголовок 2">
+          <svg viewBox="0 0 24 24"><path d="M4 5.5v13M11.5 5.5v13M4 12h7.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><text x="18" y="18" class="h-num" fill="currentColor" stroke="none">2</text></svg>
+        </button>
+        <button class="fmt-btn secondary" data-cmd="h3" title="Заголовок 3">
+          <svg viewBox="0 0 24 24"><path d="M4 5.5v13M11.5 5.5v13M4 12h7.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><text x="18" y="18" class="h-num" fill="currentColor" stroke="none">3</text></svg>
+        </button>
+      </div>
+      <div class="fmt-editor-wrap">
+        <div id="fmtEditor" contenteditable="true" spellcheck="false" data-placeholder="Введите текст..."></div>
+      </div>
     </div>
   </section>
 </main>
@@ -609,29 +944,164 @@ const ICONS = {
 
 function renderMarkdown(text) {
   let html = escapeHtml(text);
-  const codeBlocks = [];
-  const inlineCodes = [];
-  html = html.replace(/```([\s\S]*?)```/g, (m, code) => {
-    codeBlocks.push('<pre><code>' + code + '</code></pre>');
-    return '\x00CB' + (codeBlocks.length - 1) + '\x00';
+  html = html.replace(/&lt;u&gt;/g, '<u>').replace(/&lt;\/u&gt;/g, '</u>');
+  const stash = [];
+  const put = (s) => { stash.push(s); return '\x00S' + (stash.length - 1) + '\x00'; };
+  html = html.replace(/```([\s\S]*?)```/g, (m, code) => put('<pre><code>' + code + '</code></pre>'));
+  html = html.replace(/`([^`\n]+)`/g, (m, code) => put('<code>' + code + '</code>'));
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (m, txt, url) => {
+    if (/^javascript:/i.test(url.trim())) return m;
+    return put('<a href="' + url + '" target="_blank" rel="noopener">' + txt + '</a>');
   });
-  html = html.replace(/`([^`\n]+)`/g, (m, code) => {
-    inlineCodes.push('<code>' + code + '</code>');
-    return '\x00IC' + (inlineCodes.length - 1) + '\x00';
-  });
+  html = html.replace(/([^\n])\s+(#{1,3}\s)/g, '$1\n$2');
+  html = html.replace(/([^\n])\s+(-\s+)/g, '$1\n$2');
+  html = html.replace(/([^\n])\s+(&gt;\s)/g, '$1\n$2');
   html = html.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/__([^_\n]+)__/g, '<strong>$1</strong>');
   html = html.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '<em>$1</em>');
   html = html.replace(/(?<!\w)_([^_\n]+)_(?!\w)/g, '<em>$1</em>');
   html = html.replace(/~~([^~\n]+)~~/g, '<del>$1</del>');
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (m, txt, url) => {
-    if (/^javascript:/i.test(url.trim())) return m;
-    return '<a href="' + url + '" target="_blank" rel="noopener">' + txt + '</a>';
+  html = html.replace(/(^|\n)&gt;\s?([^\n]*)/g, '$1<blockquote>$2</blockquote>');
+  html = html.replace(/(^|\n)###\s+([^\n]+)/g, '$1<h3>$2</h3>');
+  html = html.replace(/(^|\n)##\s+([^\n]+)/g, '$1<h2>$2</h2>');
+  html = html.replace(/(^|\n)#\s+([^\n]+)/g, '$1<h1>$2</h1>');
+  html = html.replace(/(^|\n)---+\s*$/gm, '$1<hr>');
+  html = html.replace(/(^|\n)-\s+([^\n]+)/g, '$1<li class="ul">$2</li>');
+  html = html.replace(/(^|\n)\d+\.\s+([^\n]+)/g, '$1<li class="ol">$2</li>');
+  html = html.replace(/((?:<li class="ul">[^\n]*<\/li>\n?)+)/g, '<ul>$1</ul>');
+  html = html.replace(/((?:<li class="ol">[^\n]*<\/li>\n?)+)/g, '<ol>$1</ol>');
+  html = html.replace(/<li class="ul">/g, '<li>');
+  html = html.replace(/<li class="ol">/g, '<li>');
+  html = html.replace(/((?:^\|[^\n]*\|\n?)+)/gm, (block) => {
+    const lines = block.trim().split('\n');
+    if (lines.length < 2) return block;
+    if (!/^\|?[\s:|-]+\|?$/.test(lines[1]) || lines[1].indexOf('-') === -1) return block;
+    const row = (l) => l.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map(c => c.trim());
+    let out = '<table><thead><tr>' + row(lines[0]).map(c => '<th>' + c + '</th>').join('') + '</tr></thead><tbody>';
+    for (let i = 2; i < lines.length; i++) {
+      if (!lines[i].trim()) continue;
+      out += '<tr>' + row(lines[i]).map(c => '<td>' + c + '</td>').join('') + '</tr>';
+    }
+    return out + '</tbody></table>';
   });
   html = html.replace(/\n/g, '<br>');
-  html = html.replace(/\x00IC(\d+)\x00/g, (m, i) => inlineCodes[parseInt(i)]);
-  html = html.replace(/\x00CB(\d+)\x00/g, (m, i) => codeBlocks[parseInt(i)]);
+  html = html.replace(/\x00S(\d+)\x00/g, (m, i) => stash[parseInt(i)]);
   return html;
+}
+
+function htmlToMarkdown(root) {
+  function cellText(node) {
+    let out = '';
+    node.childNodes.forEach(c => { out += walk(c); });
+    return out.replace(/\|/g, '\\|').replace(/\n/g, ' ').trim();
+  }
+  function tableToMd(tbl) {
+    const rows = tbl.querySelectorAll('tr');
+    if (!rows.length) return '';
+    const matrix = [];
+    rows.forEach(tr => {
+      const cells = tr.querySelectorAll('th,td');
+      const row = [];
+      cells.forEach(td => row.push(cellText(td)));
+      matrix.push(row);
+    });
+    const cols = Math.max.apply(null, matrix.map(r => r.length)) || 1;
+    matrix.forEach(r => { while (r.length < cols) r.push(''); });
+    const lines = [];
+    lines.push('| ' + matrix[0].join(' | ') + ' |');
+    lines.push('| ' + Array(cols).fill('---').join(' | ') + ' |');
+    for (let i = 1; i < matrix.length; i++) {
+      lines.push('| ' + matrix[i].join(' | ') + ' |');
+    }
+    return lines.join('\n');
+  }
+  function walk(node) {
+    if (node.nodeType === 3) return node.textContent;
+    if (node.nodeType !== 1) return '';
+    const tag = node.tagName.toLowerCase();
+    if (tag === 'br') return '\n';
+    if (tag === 'hr') return '\n---\n';
+    if (tag === 'script' || tag === 'style') return '';
+    if (tag === 'table') return '\n' + tableToMd(node) + '\n';
+    if (tag === 'thead' || tag === 'tbody' || tag === 'tfoot' || tag === 'tr') {
+      let out = '';
+      node.childNodes.forEach(c => { out += walk(c); });
+      return out;
+    }
+    if (tag === 'th' || tag === 'td') return '';
+    if (tag === 'pre') {
+      const codeEl = node.querySelector('code');
+      const code = codeEl ? codeEl.textContent : node.textContent;
+      return '\n```\n' + code.replace(/\n+$/, '') + '\n```\n';
+    }
+    if (tag === 'code') {
+      const t = node.textContent;
+      if (t.indexOf('\n') !== -1) return t;
+      return '`' + t + '`';
+    }
+    if (tag === 'a') {
+      const href = node.getAttribute('href') || '';
+      const inner = collectInline(node);
+      if (/^javascript:/i.test(href.trim())) return inner;
+      return '[' + inner + '](' + href + ')';
+    }
+    if (tag === 'blockquote') {
+      const inner = collectBlock(node).replace(/^\n+|\n+$/g, '');
+      return '\n' + inner.split('\n').map(l => '> ' + l).join('\n') + '\n';
+    }
+    if (tag === 'h1') return '\n# ' + collectInline(node) + '\n';
+    if (tag === 'h2') return '\n## ' + collectInline(node) + '\n';
+    if (tag === 'h3') return '\n### ' + collectInline(node) + '\n';
+    if (tag === 'p') return '\n' + collectInline(node) + '\n';
+    if (tag === 'ul' || tag === 'ol') {
+      let out = '\n';
+      let idx = 1;
+      node.childNodes.forEach(li => {
+        if (li.nodeType === 1 && li.tagName.toLowerCase() === 'li') {
+          const prefix = tag === 'ol' ? (idx++ + '. ') : '- ';
+          out += prefix + collectInline(li) + '\n';
+        }
+      });
+      return out;
+    }
+    if (tag === 'li') return collectInline(node);
+    if (tag === 'strong' || tag === 'b') return '**' + collectInline(node) + '**';
+    if (tag === 'em' || tag === 'i') return '*' + collectInline(node) + '*';
+    if (tag === 'u') return '<u>' + collectInline(node) + '</u>';
+    if (tag === 's' || tag === 'strike' || tag === 'del') return '~~' + collectInline(node) + '~~';
+    let out = '';
+    node.childNodes.forEach(c => { out += walk(c); });
+    return out;
+  }
+  function collectInline(node) {
+    let out = '';
+    node.childNodes.forEach(c => {
+      if (c.nodeType === 3) out += c.textContent;
+      else if (c.nodeType === 1) out += walk(c);
+    });
+    return out.replace(/\s+/g, ' ').trim();
+  }
+  function collectBlock(node) {
+    let out = '';
+    node.childNodes.forEach(c => { out += walk(c); });
+    return out;
+  }
+  let md = '';
+  root.childNodes.forEach(c => { md += walk(c); });
+  md = md.replace(/\n{3,}/g, '\n\n').replace(/^\n+|\n+$/g, '');
+  return md;
+}
+
+function positionFormatPop() {
+  const pop = document.getElementById('formatPop');
+  const frame = document.getElementById('messages').getBoundingClientRect();
+  const chat = document.querySelector('.chat').getBoundingClientRect();
+  const w = Math.round(Math.max(320, Math.min(640, frame.width * 0.405)));
+  const h = Math.round(Math.min(640, frame.height * 0.866));
+  pop.style.width = w + 'px';
+  pop.style.height = h + 'px';
+  pop.style.left = Math.round(frame.left - chat.left + (frame.width - w) / 2) + 'px';
+  pop.style.top = Math.round(frame.top - chat.top + (frame.height - h) / 2) + 'px';
 }
 
 class CryptoUI {
@@ -692,7 +1162,7 @@ class CryptoUI {
       this.saveSettings();
     });
 
-    const EMOJIS = ['🥸','😐','😑','😂','🤨','🤪','😭', '🤠', '🤫','🍩','🍪','💀'];
+    const EMOJIS = ['🥸','😐','😑','😂','🤨','🤪','😭','🤠','🤫','🍩','🍪','💀'];
     const grid = document.getElementById('emojiGrid');
     EMOJIS.forEach(ch => {
       const b = document.createElement('button');
@@ -714,9 +1184,29 @@ class CryptoUI {
       document.getElementById('emojiWrap').classList.toggle('open');
     });
     document.getElementById('emojiPop').addEventListener('click', (e) => e.stopPropagation());
+
+    document.getElementById('formatBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const pop = document.getElementById('formatPop');
+      if (!pop.classList.contains('open')) positionFormatPop();
+      pop.classList.toggle('open');
+    });
+    document.getElementById('formatPop').addEventListener('click', (e) => e.stopPropagation());
+
     document.addEventListener('click', (e) => {
       const wrap = document.getElementById('emojiWrap');
       if (!wrap.contains(e.target)) wrap.classList.remove('open');
+      const fpop = document.getElementById('formatPop');
+      if (!fpop.contains(e.target) &&
+          !e.target.closest('#formatBtn') &&
+          !e.target.closest('.fmt-tbl-picker') &&
+          !e.target.closest('.fmt-tbl-tool') &&
+          !e.target.closest('.fmt-modal-backdrop')) {
+        fpop.classList.remove('open');
+      }
+    });
+    window.addEventListener('resize', () => {
+      if (document.getElementById('formatPop').classList.contains('open')) positionFormatPop();
     });
   }
 
@@ -980,15 +1470,30 @@ class CryptoUI {
   }
 
   async sendMessage() {
-    const input = document.getElementById('msgInput');
-    const text = input.value.trim();
+    const fpop = document.getElementById('formatPop');
+    const fmtEd = document.getElementById('fmtEditor');
+    let text;
+    let fromEditor = false;
+    if (fpop.classList.contains('open') && fmtEd.textContent.trim().length > 0) {
+      text = htmlToMarkdown(fmtEd);
+      fromEditor = true;
+    } else {
+      text = document.getElementById('msgInput').value.trim();
+    }
     if (!text) return;
 
     this.addMessage({ text, direction: 'out', ts: Date.now() / 1000 });
     this.lastSentText = text;
     this.lastSentTime = Date.now();
-    input.value = '';
-    input.style.height = '34px';
+
+    if (fromEditor) {
+      fmtEd.innerHTML = '';
+      fpop.classList.remove('open');
+    } else {
+      const input = document.getElementById('msgInput');
+      input.value = '';
+      input.style.height = '34px';
+    }
 
     try {
       const r = await fetch('/api/messages/send', {
@@ -1110,6 +1615,359 @@ function escapeHtml(s) {
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
 }
+
+const fmtEditor = document.getElementById('fmtEditor');
+const fmtToolbar = document.querySelector('.fmt-toolbar');
+
+try { document.execCommand('defaultParagraphSeparator', false, 'p'); } catch (e) {}
+try { document.execCommand('styleWithCSS', false, false); } catch (e) {}
+
+function fmtEsc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c]);
+}
+
+function fmtAnchorEl() {
+  const sel = getSelection();
+  if (!sel.rangeCount) return null;
+  let n = sel.anchorNode;
+  if (!n) return null;
+  const el = n.nodeType === 1 ? n : n.parentElement;
+  return el && fmtEditor.contains(el) ? el : null;
+}
+
+function fmtExec(cmd, val) {
+  fmtEditor.focus();
+  document.execCommand(cmd, false, val);
+  fmtRefreshActive();
+}
+
+function fmtToggleBlock(tag) {
+  const el = fmtAnchorEl();
+  const cur = el && el.closest('h1,h2,h3,blockquote,pre');
+  fmtExec('formatBlock', cur && cur.tagName.toLowerCase() === tag ? 'p' : tag);
+}
+
+function fmtFindCode(range) {
+  const nodes = [range.startContainer, range.endContainer, range.commonAncestorContainer];
+  for (const n of nodes) {
+    const el = n.nodeType === 1 ? n : n.parentElement;
+    const c = el && el.closest('code');
+    if (c && fmtEditor.contains(c)) return c;
+  }
+  let found = null;
+  fmtEditor.querySelectorAll('code').forEach(c => {
+    if (found) return;
+    try { if (range.intersectsNode(c)) found = c; } catch (e) {}
+  });
+  return found;
+}
+
+function fmtToggleCode() {
+  fmtEditor.focus();
+  const sel = getSelection();
+  if (!sel.rangeCount) return;
+  const range = sel.getRangeAt(0);
+  const codeEl = fmtFindCode(range);
+  if (codeEl) {
+    const parent = codeEl.parentNode;
+    while (codeEl.firstChild) parent.insertBefore(codeEl.firstChild, codeEl);
+    parent.removeChild(codeEl);
+    parent.normalize();
+    fmtRefreshActive();
+    return;
+  }
+  if (sel.isCollapsed) { fmtRefreshActive(); return; }
+  const code = document.createElement('code');
+  try {
+    range.surroundContents(code);
+  } catch (e) {
+    code.appendChild(range.extractContents());
+    range.insertNode(code);
+  }
+  fmtRefreshActive();
+}
+
+const fmtLinkModal = document.createElement('div');
+fmtLinkModal.className = 'fmt-modal-backdrop';
+fmtLinkModal.innerHTML =
+  '<div class="fmt-modal">' +
+  '<div class="fmt-modal-title">Ссылка</div>' +
+  '<input type="text" placeholder="https://..." />' +
+  '<div class="fmt-modal-actions">' +
+  '<button class="fmt-btn" type="button">OK</button>' +
+  '<button class="fmt-btn secondary" type="button">Отмена</button>' +
+  '</div></div>';
+document.body.appendChild(fmtLinkModal);
+const fmtLinkInput = fmtLinkModal.querySelector('input');
+const fmtLinkOk = fmtLinkModal.querySelector('.fmt-modal-actions .fmt-btn');
+const fmtLinkCancel = fmtLinkModal.querySelector('.fmt-modal-actions .secondary');
+let fmtSavedRange = null;
+
+function fmtInsertLink() {
+  const sel = getSelection();
+  fmtSavedRange = sel.rangeCount ? sel.getRangeAt(0).cloneRange() : null;
+  const selText = sel.toString().trim();
+  fmtLinkInput.value = /^https?:\/\//.test(selText) ? selText : 'https://';
+  fmtLinkModal.classList.add('show');
+  fmtLinkInput.focus();
+  fmtLinkInput.select();
+}
+
+function fmtCloseLink(restore) {
+  fmtLinkModal.classList.remove('show');
+  fmtEditor.focus();
+  if (restore && fmtSavedRange) {
+    const sel = getSelection();
+    sel.removeAllRanges();
+    sel.addRange(fmtSavedRange);
+  }
+  fmtSavedRange = null;
+}
+
+function fmtApplyLink() {
+  const url = fmtLinkInput.value.trim();
+  fmtCloseLink(true);
+  if (!url) { fmtRefreshActive(); return; }
+  const selText = getSelection().toString().trim();
+  if (selText) {
+    document.execCommand('createLink', false, url);
+  } else {
+    document.execCommand('insertHTML', false, '<a href="' + fmtEsc(url) + '">' + fmtEsc(url) + '</a>');
+  }
+  fmtRefreshActive();
+}
+
+fmtLinkOk.addEventListener('click', fmtApplyLink);
+fmtLinkCancel.addEventListener('click', () => fmtCloseLink(true));
+fmtLinkModal.addEventListener('mousedown', e => { if (e.target === fmtLinkModal) fmtCloseLink(true); });
+fmtLinkInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); fmtApplyLink(); }
+  if (e.key === 'Escape') { e.preventDefault(); fmtCloseLink(true); }
+});
+
+const fmtPicker = document.createElement('div');
+fmtPicker.className = 'fmt-tbl-picker';
+fmtPicker.innerHTML = '<div class="fmt-tbl-grid"></div><div class="fmt-tbl-label">1 x 1</div>';
+document.body.appendChild(fmtPicker);
+const fmtGrid = fmtPicker.querySelector('.fmt-tbl-grid');
+const fmtPlabel = fmtPicker.querySelector('.fmt-tbl-label');
+let pkCols = 1, pkRows = 1;
+for (let r = 1; r <= 8; r++) {
+  for (let c = 1; c <= 10; c++) {
+    const cell = document.createElement('div');
+    cell.className = 'fmt-tbl-cell';
+    cell.dataset.c = c;
+    cell.dataset.r = r;
+    fmtGrid.appendChild(cell);
+  }
+}
+function fmtPaintPicker() {
+  fmtGrid.querySelectorAll('.fmt-tbl-cell').forEach(el => {
+    el.classList.toggle('hl', +el.dataset.c <= pkCols && +el.dataset.r <= pkRows);
+  });
+  fmtPlabel.textContent = pkCols + ' x ' + pkRows;
+}
+fmtPaintPicker();
+fmtGrid.addEventListener('mouseover', e => {
+  const c = e.target.closest('.fmt-tbl-cell');
+  if (!c) return;
+  pkCols = +c.dataset.c;
+  pkRows = +c.dataset.r;
+  fmtPaintPicker();
+});
+fmtGrid.addEventListener('mousedown', e => e.preventDefault());
+fmtGrid.addEventListener('click', e => {
+  const c = e.target.closest('.fmt-tbl-cell');
+  if (!c) return;
+  fmtInsertTable(pkCols, pkRows);
+  fmtPicker.classList.remove('show');
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('.fmt-tbl-picker') && !e.target.closest('[data-cmd="table"]')) {
+    fmtPicker.classList.remove('show');
+  }
+});
+
+function fmtTogglePicker(btn) {
+  if (fmtPicker.classList.contains('show')) { fmtPicker.classList.remove('show'); return; }
+  fmtPicker.classList.add('show');
+  const r = btn.getBoundingClientRect();
+  let left = r.left;
+  if (left + fmtPicker.offsetWidth > innerWidth - 8) left = innerWidth - fmtPicker.offsetWidth - 8;
+  fmtPicker.style.left = left + 'px';
+  fmtPicker.style.top = (r.bottom + 6) + 'px';
+}
+
+function fmtInsertTable(cols, rows) {
+  fmtEditor.focus();
+  const el = fmtAnchorEl();
+  const inTable = el && el.closest('table');
+  if (inTable) {
+    const range = document.createRange();
+    range.setStartAfter(inTable);
+    range.collapse(true);
+    const sel = getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+  let html = '<table><thead><tr>' + '<th><br></th>'.repeat(cols) + '</tr></thead><tbody>';
+  for (let i = 0; i < Math.max(1, rows - 1); i++) html += '<tr>' + '<td><br></td>'.repeat(cols) + '</tr>';
+  html += '</tbody></table><p><br></p>';
+  document.execCommand('insertHTML', false, html);
+  fmtRefreshActive();
+}
+
+function fmtMakeTool(sign, title, minus) {
+  const b = document.createElement('button');
+  b.className = 'fmt-tbl-tool' + (minus ? ' minus' : '');
+  b.title = title;
+  b.textContent = sign;
+  document.body.appendChild(b);
+  return b;
+}
+const fmtToolRowP = fmtMakeTool('+', 'Добавить строку', false);
+const fmtToolRowM = fmtMakeTool('-', 'Удалить строку', true);
+const fmtToolColP = fmtMakeTool('+', 'Добавить столбец', false);
+const fmtToolColM = fmtMakeTool('-', 'Удалить столбец', true);
+const fmtToolDel = fmtMakeTool('×', 'Удалить таблицу', true);
+const fmtToolBtns = [fmtToolRowP, fmtToolRowM, fmtToolColP, fmtToolColM, fmtToolDel];
+let fmtCurTable = null;
+
+function fmtShowTools(tbl) {
+  fmtCurTable = tbl;
+  const r = tbl.getBoundingClientRect();
+  const cx = r.left + r.width / 2;
+  const cy = r.top + r.height / 2;
+  fmtToolColP.style.left = (r.right - 9) + 'px';
+  fmtToolColP.style.top = (cy - 20) + 'px';
+  fmtToolColM.style.left = (r.right - 9) + 'px';
+  fmtToolColM.style.top = (cy + 2) + 'px';
+  fmtToolRowP.style.left = (cx - 20) + 'px';
+  fmtToolRowP.style.top = (r.bottom - 8) + 'px';
+  fmtToolRowM.style.left = (cx + 2) + 'px';
+  fmtToolRowM.style.top = (r.bottom - 8) + 'px';
+  fmtToolDel.style.left = (cx - 9) + 'px';
+  fmtToolDel.style.top = (r.top - 9) + 'px';
+  fmtToolBtns.forEach(b => b.classList.add('show'));
+}
+function fmtHideTools() {
+  fmtCurTable = null;
+  fmtToolBtns.forEach(b => b.classList.remove('show'));
+}
+document.addEventListener('mouseover', e => {
+  if (e.target.closest('.fmt-tbl-tool')) return;
+  const tbl = e.target.closest('table');
+  if (tbl && fmtEditor.contains(tbl)) fmtShowTools(tbl);
+  else fmtHideTools();
+});
+fmtEditor.addEventListener('scroll', fmtHideTools);
+
+fmtToolRowP.addEventListener('click', () => {
+  if (!fmtCurTable) return;
+  const cols = fmtCurTable.rows[0] ? fmtCurTable.rows[0].cells.length : 1;
+  const tr = fmtCurTable.insertRow(-1);
+  for (let i = 0; i < cols; i++) tr.insertCell(-1).innerHTML = '<br>';
+  fmtShowTools(fmtCurTable);
+});
+fmtToolRowM.addEventListener('click', () => {
+  if (!fmtCurTable || fmtCurTable.rows.length < 2) return;
+  fmtCurTable.deleteRow(fmtCurTable.rows.length - 1);
+  fmtShowTools(fmtCurTable);
+});
+fmtToolColP.addEventListener('click', () => {
+  if (!fmtCurTable) return;
+  for (const tr of fmtCurTable.rows) {
+    const cell = document.createElement(tr.parentElement.tagName === 'THEAD' ? 'th' : 'td');
+    cell.innerHTML = '<br>';
+    tr.appendChild(cell);
+  }
+  fmtShowTools(fmtCurTable);
+});
+fmtToolColM.addEventListener('click', () => {
+  if (!fmtCurTable || !fmtCurTable.rows[0] || fmtCurTable.rows[0].cells.length < 2) return;
+  for (const tr of fmtCurTable.rows) tr.deleteCell(tr.cells.length - 1);
+  fmtShowTools(fmtCurTable);
+});
+fmtToolDel.addEventListener('click', () => {
+  if (!fmtCurTable) return;
+  fmtCurTable.remove();
+  fmtEditor.focus();
+  fmtHideTools();
+});
+
+function fmtSetOn(cmd, v) {
+  const btn = fmtToolbar.querySelector('[data-cmd="' + cmd + '"]');
+  if (btn) btn.classList.toggle('on', !!v);
+}
+
+function fmtRefreshActive() {
+  const q = c => { try { return document.queryCommandState(c); } catch (e) { return false; } };
+  fmtSetOn('bold', q('bold'));
+  fmtSetOn('italic', q('italic'));
+  fmtSetOn('underline', q('underline'));
+  fmtSetOn('strike', q('strikeThrough'));
+  fmtSetOn('ul', q('insertUnorderedList'));
+  fmtSetOn('ol', q('insertOrderedList'));
+  const el = fmtAnchorEl();
+  fmtSetOn('code', !!(el && el.closest('code')));
+  fmtSetOn('codeblock', !!(el && el.closest('pre')));
+  fmtSetOn('link', !!(el && el.closest('a')));
+  fmtSetOn('quote', !!(el && el.closest('blockquote')));
+  fmtSetOn('h1', !!(el && el.closest('h1')));
+  fmtSetOn('h2', !!(el && el.closest('h2')));
+  fmtSetOn('h3', !!(el && el.closest('h3')));
+}
+
+const fmtActions = {
+  bold: () => fmtExec('bold'),
+  italic: () => fmtExec('italic'),
+  underline: () => fmtExec('underline'),
+  strike: () => fmtExec('strikeThrough'),
+  code: fmtToggleCode,
+  link: fmtInsertLink,
+  codeblock: () => fmtToggleBlock('pre'),
+  ul: () => fmtExec('insertUnorderedList'),
+  ol: () => fmtExec('insertOrderedList'),
+  table: () => fmtTogglePicker(fmtToolbar.querySelector('[data-cmd="table"]')),
+  hr: () => fmtExec('insertHorizontalRule'),
+  quote: () => fmtToggleBlock('blockquote'),
+  h1: () => fmtToggleBlock('h1'),
+  h2: () => fmtToggleBlock('h2'),
+  h3: () => fmtToggleBlock('h3')
+};
+
+fmtToolbar.addEventListener('mousedown', e => { if (e.target.closest('button')) e.preventDefault(); });
+fmtToolbar.addEventListener('click', e => {
+  const btn = e.target.closest('button[data-cmd]');
+  if (btn && fmtActions[btn.dataset.cmd]) fmtActions[btn.dataset.cmd]();
+});
+
+fmtEditor.addEventListener('keydown', e => {
+  const mod = e.ctrlKey || e.metaKey;
+  if (mod && !e.altKey && !e.shiftKey && e.code === 'KeyK') {
+    e.preventDefault();
+    fmtInsertLink();
+  }
+  if (mod && !e.altKey && !e.shiftKey && e.code === 'Enter') {
+    e.preventDefault();
+    if (window.ui) window.ui.sendMessage();
+  }
+});
+
+fmtEditor.addEventListener('paste', e => {
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+  document.execCommand('insertText', false, text);
+});
+
+document.addEventListener('selectionchange', () => {
+  if (fmtAnchorEl()) requestAnimationFrame(fmtRefreshActive);
+});
+fmtEditor.addEventListener('input', () => requestAnimationFrame(fmtRefreshActive));
+fmtEditor.addEventListener('keyup', () => requestAnimationFrame(fmtRefreshActive));
+fmtEditor.addEventListener('click', () => requestAnimationFrame(fmtRefreshActive));
+
+fmtRefreshActive();
 
 window.ui = new CryptoUI();
 </script>
