@@ -1,0 +1,4 @@
+fastapi
+uvicorn[standard]
+cryptography
+cryptolayer-module-interface @ git+https://github.com/igmunv/cryptolayer-module-interface.git

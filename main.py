@@ -1,16 +1,22 @@
 import sys
 import os
 from pathlib import Path
+
 if getattr(sys, 'frozen', False):
-    BUNDLE_DIR = Path(sys._MEIPASS)
-    APP_DIR = Path(os.path.dirname(sys.executable))
+    ROOT = Path(sys._MEIPASS)
 else:
-    BUNDLE_DIR = Path(__file__).parent
-    APP_DIR = BUNDLE_DIR
-sys.path.insert(0, str(BUNDLE_DIR))
-STATIC_DIR = BUNDLE_DIR / "static"
+    ROOT = Path(__file__).parent
+
+CRYPTOLAYER_SRC = ROOT / "cryptolayer" / "src"
+
+if str(CRYPTOLAYER_SRC) not in sys.path:
+    sys.path.insert(0, str(CRYPTOLAYER_SRC))
+
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+STATIC_DIR = ROOT / "static"
 STATIC_DIR.mkdir(exist_ok=True)
-MODULES_DIR = BUNDLE_DIR / "modules"
+MODULES_DIR = ROOT / "modules"
 IMAGES_DIR = STATIC_DIR / "images"
 IMAGES_DIR.mkdir(exist_ok=True)
 import asyncio
@@ -27,8 +33,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-
-sys.path.insert(0, str(Path(__file__).parent))
 
 from base_module import BaseModule
 from crypto_layer import CryptoLayer

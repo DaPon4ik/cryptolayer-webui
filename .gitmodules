@@ -1,0 +1,9 @@
+[submodule "cryptolayer"]
+	path = cryptolayer
+	url = https://github.com/igmunv/cryptolayer
+[submodule "modules"]
+	path = modules
+	url = https://github.com/igmunv/cryptolayer-modules
+[submodule "dicts"]
+	path = dicts
+	url = https://github.com/igmunv/cryptolayer-wordcoder-dicts
