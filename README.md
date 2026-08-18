@@ -2,7 +2,7 @@
 
 # CryptoLayer Web UI
 
-<img src="static/images/logo_alt.svg" alt="CLWU" width="300">
+<img src="src/static/images/logo_alt.svg" alt="CLWU" width="300">
 
 
 Web-интерфейс для защищенного обмена сообщениями в мессенджерах на базе CryptoLayer.
@@ -14,7 +14,7 @@ Web-интерфейс для защищенного обмена сообщен
 
 ---
 
-<img src="stuff/screenshot1.png" width="500"> <img src="stuff/screenshot2.png" width="500">
+<img src="src/stuff/screenshot1.png" width="500"> <img src="src/stuff/screenshot2.png" width="500">
 
 </div>
 
