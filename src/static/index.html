@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>CryptoLayer Web UI</title>
 <style>
   :root {
@@ -168,6 +168,7 @@
     padding: 12px 20px; background: var(--bg2);
     border-bottom: 1px solid var(--border);
     display: flex; justify-content: space-between; align-items: center;
+    gap: 10px;
     flex-shrink: 0;
   }
   .chat-header .info { font-size: 13px; color: var(--fg2); display: flex; align-items: center; gap: 6px; }
@@ -310,6 +311,7 @@
     padding: 12px 16px; border-radius: 8px; z-index: 200;
     box-shadow: 0 8px 24px rgba(0,0,0,.5);
     display: flex; align-items: center; gap: 8px;
+    max-width: calc(100vw - 40px);
   }
   .toast svg { width: 16px; height: 16px; }
   .toast.error { border-color: var(--error); color: var(--error); }
@@ -325,6 +327,7 @@
     padding: 3px 8px; font-size: 11px; background: var(--error);
     color: white; border: none; border-radius: 4px; cursor: pointer;
     display: inline-flex; align-items: center;
+    flex-shrink: 0;
   }
   .known-node button svg { width: 12px; height: 12px; }
 
@@ -682,6 +685,212 @@
     --scrollbar-thumb: #c0c5cc;
     --scrollbar-thumb-hover: #a8aeb5;
   }
+
+  .burger-btn { display: none; }
+  .sidebar-backdrop { display: none; }
+  .sidebar-header-mobile { display: none; }
+
+  @media (max-width: 768px) {
+    html, body { font-size: 13px; }
+
+    header { padding: 8px 12px; }
+    .brand h1 { font-size: 14px; }
+    .brand img { width: 18px; height: 18px; }
+    .brand { gap: 6px; }
+    .conn-status { font-size: 10px; padding: 4px 8px; gap: 4px; }
+    .conn-status svg { width: 12px; height: 12px; }
+
+    main {
+      grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100vh;
+      height: 100dvh;
+      width: 85vw;
+      max-width: 320px;
+      transform: translateX(-100%);
+      transition: transform 0.28s cubic-bezier(.4,.0,.2,1);
+      z-index: 150;
+      border-right: 1px solid var(--border);
+      box-shadow: 4px 0 24px rgba(0,0,0,0.4);
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .sidebar-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 149;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease;
+      display: block;
+    }
+    body.sidebar-open .sidebar {
+      transform: translateX(0);
+    }
+    body.sidebar-open .sidebar-backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    body.sidebar-open {
+      overflow: hidden;
+    }
+
+    .burger-btn {
+      display: inline-flex;
+    }
+
+    .sidebar-header-mobile {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .sidebar-header-mobile .brand {
+      gap: 8px;
+    }
+    .sidebar-header-mobile .brand h1 {
+      font-size: 14px;
+    }
+    .sidebar-header-mobile .brand img {
+      width: 18px;
+      height: 18px;
+    }
+    .sidebar-header-mobile .icon-btn {
+      width: 30px;
+      height: 30px;
+    }
+    .sidebar-header-mobile .icon-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .sidebar-section { padding: 12px 16px; }
+    .sidebar-section h2 { font-size: 11px; margin-bottom: 8px; }
+    .form-row { margin-bottom: 8px; }
+    .form-row label { font-size: 11px; margin-bottom: 3px; }
+    input[type="text"], input[type="password"], textarea, select {
+      padding: 7px 9px;
+      font-size: 13px;
+    }
+
+    .chat-header { padding: 10px 12px; gap: 8px; }
+    .chat-header .info { font-size: 12px; gap: 4px; }
+    .chat-header .info svg { width: 14px; height: 14px; }
+    .chat-header .node-id { font-size: 10px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chat-header-right { gap: 6px; flex-shrink: 0; }
+    #cryptoBadge { font-size: 10px; padding: 4px 7px; margin-bottom: 0; display: none; }
+    .icon-btn { width: 32px; height: 32px; flex-shrink: 0; }
+    .icon-btn svg { width: 16px; height: 16px; }
+    .chat-messages { padding: 12px; gap: 8px; }
+    .chat-input { padding: 10px 12px; gap: 6px; padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+    .chat-input textarea { font-size: 14px; padding: 6px 10px; min-height: 36px; height: 36px; }
+
+    .message { max-width: 85%; padding: 8px 12px; font-size: 14px; }
+
+    .btn { padding: 7px 10px; font-size: 12px; gap: 4px; }
+    .btn svg { width: 12px; height: 12px; }
+    .btn-group { gap: 6px; }
+    .btn-group .btn { flex: 1; justify-content: center; }
+
+    .modal {
+      min-width: auto;
+      width: 92vw;
+      padding: 16px;
+    }
+    .modal h3 { font-size: 14px; margin-bottom: 10px; }
+    .modal p { font-size: 13px; margin-bottom: 12px; }
+    .modal .prompt { padding: 10px; font-size: 11px; }
+
+    .settings-modal {
+      width: 95vw;
+      height: 85vh;
+      flex-direction: column;
+    }
+    .settings-sidebar {
+      width: 100%;
+      flex-direction: row;
+      overflow-x: auto;
+      padding: 6px 0;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .settings-tab {
+      white-space: nowrap;
+      border-left: none;
+      border-bottom: 3px solid transparent;
+      padding: 8px 14px;
+      font-size: 12px;
+    }
+    .settings-tab.active {
+      border-left-color: transparent;
+      border-bottom-color: var(--accent);
+    }
+    .settings-content {
+      padding: 16px;
+      overflow-y: auto;
+    }
+    .settings-content h3 { font-size: 14px; margin-bottom: 14px; }
+
+    .toast {
+      left: 12px;
+      right: 12px;
+      bottom: calc(12px + env(safe-area-inset-bottom));
+      max-width: none;
+      font-size: 12px;
+      padding: 10px 12px;
+    }
+
+    .fmt-btn { padding: 4px 8px; font-size: 11px; height: 26px; min-width: 26px; }
+    .fmt-toolbar { gap: 2px; padding: 3px 4px; }
+    .fmt-tbl-picker { max-width: 95vw; overflow-x: auto; }
+    .fmt-modal { width: 92vw; max-width: 320px; }
+
+    .status-log { max-height: 180px; }
+    .known-nodes { max-height: 120px; }
+
+    .pass-eye { right: 2px; padding: 4px; }
+
+    .known-node { padding: 6px 8px; font-size: 11px; }
+    .known-node button { padding: 2px 6px; font-size: 10px; }
+
+    .emoji-pop {
+      position: fixed;
+      left: 10px;
+      right: 10px;
+      bottom: calc(65px + env(safe-area-inset-bottom));
+      width: auto;
+      max-height: 200px;
+      padding: 8px;
+    }
+    .emoji-grid button { font-size: 20px; padding: 6px; }
+  }
+
+  @media (max-width: 400px) {
+    header { padding: 6px 10px; }
+    .brand h1 { font-size: 13px; }
+    .conn-status { font-size: 9px; padding: 3px 6px; }
+    .conn-status svg { display: none; }
+    .chat-input { padding: 8px 10px; gap: 4px; padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
+    .chat-input textarea { font-size: 13px; padding: 5px 8px; }
+    .btn { padding: 6px 8px; font-size: 11px; }
+    .message { font-size: 13px; padding: 7px 10px; }
+    .chat-header { padding: 8px 10px; }
+    .chat-header-right { gap: 4px; }
+    .icon-btn { width: 30px; height: 30px; }
+    .icon-btn svg { width: 14px; height: 14px; }
+    .emoji-pop { left: 8px; right: 8px; bottom: calc(61px + env(safe-area-inset-bottom)); }
+  }
 </style>
 </head>
 <body>
@@ -698,7 +907,18 @@
 </header>
 
 <main>
-  <aside class="sidebar">
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-header-mobile">
+      <div class="brand">
+        <img src="images/logo.svg" alt="logo" class="logoImgMobile">
+        <h1>CryptoLayer</h1>
+      </div>
+      <button type="button" class="icon-btn" id="closeSidebarBtn" title="Закрыть">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
 
     <div class="sidebar-section">
       <h2>
@@ -788,7 +1008,10 @@
 
   <section class="chat">
     <div class="chat-header">
-      <div>
+      <button type="button" class="icon-btn burger-btn" id="burgerBtn" title="Меню">
+        <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div style="flex:1;min-width:0;">
         <div class="info">
           <svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           Чат
@@ -1096,12 +1319,30 @@ function positionFormatPop() {
   const pop = document.getElementById('formatPop');
   const frame = document.getElementById('messages').getBoundingClientRect();
   const chat = document.querySelector('.chat').getBoundingClientRect();
-  const w = Math.round(Math.max(320, Math.min(640, frame.width * 0.405)));
-  const h = Math.round(Math.min(640, frame.height * 0.866));
+  const isMobile = window.innerWidth <= 768;
+  let w, h, left, top;
+  if (isMobile) {
+    w = Math.round(chat.width * 0.95);
+    h = Math.round(chat.height * 0.85);
+    left = Math.round(chat.width * 0.025);
+    top = Math.round(chat.height * 0.075);
+  } else {
+    w = Math.round(Math.max(320, Math.min(640, frame.width * 0.405)));
+    h = Math.round(Math.min(640, frame.height * 0.866));
+    left = Math.round(frame.left - chat.left + (frame.width - w) / 2);
+    top = Math.round(frame.top - chat.top + (frame.height - h) / 2);
+  }
   pop.style.width = w + 'px';
   pop.style.height = h + 'px';
-  pop.style.left = Math.round(frame.left - chat.left + (frame.width - w) / 2) + 'px';
-  pop.style.top = Math.round(frame.top - chat.top + (frame.height - h) / 2) + 'px';
+  pop.style.left = left + 'px';
+  pop.style.top = top + 'px';
+}
+
+function closeSidebar() {
+  document.body.classList.remove('sidebar-open');
+}
+function toggleSidebar() {
+  document.body.classList.toggle('sidebar-open');
 }
 
 class CryptoUI {
@@ -1119,10 +1360,14 @@ class CryptoUI {
   }
 
   bindUI() {
-    document.getElementById('initBtn').onclick = () => this.initCrypto();
-    document.getElementById('stopBtn').onclick = () => this.stopCrypto();
+    document.getElementById('initBtn').onclick = () => { this.initCrypto(); if (window.innerWidth <= 768) closeSidebar(); };
+    document.getElementById('stopBtn').onclick = () => { this.stopCrypto(); if (window.innerWidth <= 768) closeSidebar(); };
     document.getElementById('sendBtn').onclick = () => this.sendMessage();
     document.getElementById('refreshNodesBtn').onclick = () => this.loadKnownNodes();
+
+    document.getElementById('burgerBtn').addEventListener('click', toggleSidebar);
+    document.getElementById('sidebarBackdrop').addEventListener('click', closeSidebar);
+    document.getElementById('closeSidebarBtn').addEventListener('click', closeSidebar);
 
     const msgInput = document.getElementById('msgInput');
     msgInput.addEventListener('keydown', (e) => {
@@ -1162,7 +1407,7 @@ class CryptoUI {
       this.saveSettings();
     });
 
-    const EMOJIS = ['🥸','😐','😑','😂','🤨','🤪','😭','🤠','🤫','🍩','🍪','💀'];
+    const EMOJIS = ['🥸','😐','😑','😂','🤨','🤪','😭', '🤠', '🤫','🍩','🍪','💀'];
     const grid = document.getElementById('emojiGrid');
     EMOJIS.forEach(ch => {
       const b = document.createElement('button');
@@ -1240,6 +1485,10 @@ class CryptoUI {
       logoImg.onerror = function() { this.style.display = 'none'; };
       const newSrc = theme === 'light' ? 'images/logo_alt.svg' : 'images/logo.svg';
       logoImg.src = newSrc;
+    }
+    const logoImgMobile = document.querySelector('.logoImgMobile');
+    if (logoImgMobile) {
+      logoImgMobile.src = theme === 'light' ? 'images/logo_alt.svg' : 'images/logo.svg';
     }
   }
 
@@ -1793,7 +2042,9 @@ function fmtTogglePicker(btn) {
   fmtPicker.classList.add('show');
   const r = btn.getBoundingClientRect();
   let left = r.left;
-  if (left + fmtPicker.offsetWidth > innerWidth - 8) left = innerWidth - fmtPicker.offsetWidth - 8;
+  const maxW = fmtPicker.offsetWidth;
+  if (left + maxW > innerWidth - 8) left = innerWidth - maxW - 8;
+  if (left < 8) left = 8;
   fmtPicker.style.left = left + 'px';
   fmtPicker.style.top = (r.bottom + 6) + 'px';
 }
